@@ -14,7 +14,7 @@
 <html>
 <head>
 	<title>Candice Experiments - Conveyor Belt Pricing Tool</title>
-	<link rel="icon" href="http://cndce.me/favicon.png">
+	<link rel="icon" href="https://repo.cndce.me/favicon.png">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 

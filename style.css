@@ -1,0 +1,508 @@
+body,html{
+	margin: 0;
+	width: 100%;
+	height: 100%;
+
+	font-family: sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6{
+	font-weight: 700;
+}
+
+small, .small, .small-75{
+	font-size: 75%;
+}
+
+.small-85{
+	font-size: 85%;
+}
+
+.logo-column{
+	width: 215px;
+	-webkit-box-flex: 0;
+	-webkit-flex: none;
+	   -moz-box-flex: 0;
+	    -ms-flex: none;
+	        flex: none;
+}
+
+
+.btn, button{
+	border: none !important;
+	outline: none !important;
+	cursor: pointer;
+	padding: 5px 20px;
+	font-weight: bold;
+	-moz-border-radius: 0px;
+	     border-radius: 0px;
+
+}
+
+.btn:hover, button:hover{
+
+}
+
+.btn-primary, button{
+	background: #041E42;
+	color: white;
+}
+.btn-primary:hover, button:hover{
+	background: #041E42;
+}
+
+.btn-red{
+	background: #971B2F;
+	border-color: white;
+}
+
+.btn-red:hover{
+	background: #041E42;
+}
+
+.btn-wide{
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	font-size: 90%;
+}
+
+.text-info{
+	color: #044899 !important;
+}
+
+.template{
+	display: none;
+}
+
+.help-text{
+	cursor: pointer;
+
+}
+
+.note-standard{
+	font-size: 80%;
+	margin-bottom: 30px;
+	text-align: right;
+	color: gray;
+	font-style: italic;
+	letter-spacing: 1px;
+}
+
+.help-text:not(.no-style){
+	color: red;
+	border: solid 1px;
+	-moz-border-radius: 50%;
+	     border-radius: 50%;
+	padding: 0px 4px;
+	font-size: 10px;
+
+	width: 16px;
+	height: 16px;
+	line-height: 16px;
+}
+
+.help-text:not(.no-style):hover{
+	background: #ed1b24;
+    color: white; 
+
+
+    -webkit-transform: scale(1.2);
+	   -moz-transform: scale(1.2);
+	    -ms-transform: scale(1.2);
+	     -o-transform: scale(1.2);
+	        transform: scale(1.2);
+}
+
+
+.was-validated .form-control:valid,
+.was-validated .form-check-input:valid+.form-check-label,
+.custom-control-input.is-valid~.custom-control-description, 
+.was-validated .custom-control-input:valid~.custom-control-description{
+	border-color: #ced4da;
+	color: black;
+}
+
+
+.ui-dialog-titlebar-close{
+	border: none;
+    outline: none;
+    -moz-border-radius: 50%;
+         border-radius: 50%;
+    background: gray;
+    cursor: pointer;
+    color: white;
+    line-height: 15px;
+}
+
+.ui-dialog-titlebar-close::before{
+	content: 'x';
+}
+
+
+.input-standard{
+	font-weight: bold;
+	color: #041E42;
+}
+option.input-standard:hover,
+option.input-standard:checked{
+	background-color: #041E42;
+	color: white;
+}
+
+
+#top-header{
+	background: #e4e5e7;
+	height: 32px;
+	line-height: 32px;
+
+	font-weight: 300;
+	font-size: 75%;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+
+#top-header .logo-column{
+	background: #b1b2b3;
+}
+
+#header{
+	background: #131313;
+}
+
+#header .logo-column{
+	background: white;
+}
+
+#header .title-column{
+	background: url('./assets/conveyor1.jpg');
+}
+
+#header .title-column h1{
+	color: white;
+	font-size: 300%;
+	background: rgba(0, 0, 0, 0.54);
+	padding: 10px 20px;
+	font-weight: 800;
+}
+
+
+body #content{
+	-webkit-transition: all 0.3s ease-in-out;
+	-o-transition: all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
+}
+
+body.cndce-waiting #content{
+	pointer-events: none;
+	opacity: 0.5;
+	cursor: wait;
+}
+
+
+
+#sidebar li{
+	list-style: none;
+	background: #e4e5e7;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    font-weight: 300;
+    font-size: 90%;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-bottom: solid 2px #dedede;
+    position: relative;
+
+    -webkit-transition: padding 0.3s cubic-bezier(0.42, 0, 0.15, 1.79);
+    -o-transition: padding 0.3s cubic-bezier(0.42, 0, 0.15, 1.79);
+    -moz-transition: padding 0.3s cubic-bezier(0.42, 0, 0.15, 1.79);
+    transition: padding 0.3s cubic-bezier(0.42, 0, 0.15, 1.79);
+}
+
+#sidebar li:not(.active):hover{
+	background: #979797;
+	border-bottom-color: transparent;
+}
+
+#sidebar li.active{
+    background: #041E42;
+    color: white;
+    padding: 20px 20px;
+    font-weight: 800;
+	border-bottom: none;
+
+}
+
+#sidebar li.active::after{
+	content: '';
+	position: absolute;
+	left: -webkit-calc(100% - 1px);
+	left: -moz-calc(100% - 1px);
+	left: calc(100% - 1px);
+	top: 0;
+	height: 100%;
+	width: 15px;
+
+	/*background: inherit;
+	-webkit-clip-path: polygon(0 0, 100% 50%, 0 100%);
+	        clip-path: polygon(0 0, 100% 50%, 0 100%);*/
+
+	background: url('./assets/triangle.svg');
+	-moz-background-size: 100% 100%;
+	     background-size: 100% 100%;
+}
+
+
+#sidebar li.visited{
+	text-decoration: underline;
+}
+
+
+
+#sidebar-spacer{
+	display: none;
+}
+
+body.past-header #sidebar-spacer{
+	display: block;
+}
+
+body.past-header #sidebar{
+	position: fixed;
+	top: 0;
+}
+
+body:not(.past-header) #sidebar{
+	left: 0!important;
+}
+
+
+/*#about-container .title{
+	background: #ed1b24;
+	color: white;
+}
+
+#about-container img.preview{
+	background: #73cbea;
+}
+*/
+
+
+#about-spacer{
+	display: none;
+}
+
+body.past-header #about-spacer{
+	display: block;
+}
+
+body.past-header #about-container{
+	position: fixed;
+}
+
+
+
+
+
+#steps-container .step{
+	opacity: 0;
+	visibility: collapse;
+	height: 0;
+	display: none;
+
+	-webkit-transition: opacity 0.3s ease-in-out;
+    -o-transition: opacity 0.3s ease-in-out;
+    -moz-transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.3s ease-in-out;
+}
+
+
+#steps-container .step.active{
+	opacity: 1;
+	visibility: visible;
+	height: auto;
+
+	display: block;
+}
+
+#steps-container .btn-next,
+#steps-container .btn-prev,
+#steps-container .btn-submit{
+	width: 150px;
+}
+
+#steps-container label img{
+	border: solid 3px transparent;
+	-moz-border-radius: 10px;
+	     border-radius: 10px;
+}
+
+#steps-container label img:hover{
+	border-color: #80bdff;
+}
+
+#side-rails-step .side-rail-options{
+	display: none;
+}
+
+#belt-step .belt-row{
+	cursor: pointer;
+
+	-webkit-transition: all 0.2s cubic-bezier(1, 0.13, 0.58, 1);
+    -o-transition: all 0.2s cubic-bezier(1, 0.13, 0.58, 1);
+    -moz-transition: all 0.2s cubic-bezier(1, 0.13, 0.58, 1);
+    transition: all 0.2s cubic-bezier(1, 0.13, 0.58, 1);
+}
+
+#belt-step .belt-row.selected{
+	background: #041E42;
+	color: white;
+	font-weight: 700;
+
+	-webkit-box-shadow: 0 0 7px #0000004a;
+	   -moz-box-shadow: 0 0 7px #0000004a;
+	        box-shadow: 0 0 7px #0000004a;
+}
+
+#belt-step .belt-row td{
+	border: none;
+	outline: none;
+}
+
+
+
+#belt-step table{
+	table-layout: fixed;
+	word-break: break-all;
+}
+
+#belt-step th{
+	white-space: nowrap;
+}
+
+
+#belt-step .belt-table-body{
+	height: 350px; 
+	overflow-y: auto; 
+	margin-right: -15px;
+}
+
+
+#pricing-step h3{
+	font-size: 120%;
+}
+
+#pricing-step h6{
+	font-size: 90%;
+}
+
+#pricing-step div.end-price{
+	background: #cbcbcb;
+	color: white;
+	padding: 10px 15px;
+	-moz-border-radius: 15px;
+	     border-radius: 15px;
+	letter-spacing: 2px;
+	line-height: 38px;
+	vertical-align: middle;
+}
+
+#pricing-step .end-price h3{
+	vertical-align: middle;
+}
+
+#pricing-step > div > table{
+	width: 100%;
+}
+
+#pricing-step th{
+	width: 30%;
+	vertical-align: top;
+}
+
+#pricing-step[data-opsMode="accumulating"] .continuous,
+#pricing-step[data-opsMode="continuous"] .accumulating{
+	display: none;
+}
+
+#steps-container.center-drive #conveyor-drive-version .center-drive-hidden{
+	display: none;
+}
+
+
+#steps-container.head-drive #conveyor-drive-version .head-drive-hidden{
+	display: none;
+}
+#steps-container.head-drive #conveyor-outfeed-container{
+	display: none;
+}
+
+#steps-container.head-standard #conveyor-voltage .head-standard-hidden{
+	display: none;
+}
+
+#steps-container.no-telescoping-stand #telescoping-stand-col{
+	display: none;
+}
+
+#steps-container.telescoping-selected .has-casters-label{
+	display: none;
+}
+
+#steps-container.no-stands #stand-height-input,
+#steps-container.no-stands .no-stand-hidden,
+#steps-container.no-stands #pricing-step .stand-height-label,
+#steps-container.no-stands #pricing-step .stand-quantity-label{
+	display: none;
+}
+
+
+#steps-container.fixed-rails-selected #fixed-rails-options,
+#steps-container.adjustable-rails-selected #adjustable-rails-options{
+	display: block;
+}
+
+
+body.hidden-prices .price-top,
+body.hidden-prices .price-second,
+body.hidden-prices .belt-price,
+body.hidden-prices .hidden-prices-hide,
+body.hidden-prices .total-price{
+	display: none;
+}
+
+body.hidden-prices .end-price .price-top{
+	display: initial;
+}
+
+body.hidden-prices table.end-price{
+	display: none;
+}
+
+body .hidden-prices-show{
+	display: none;
+}
+
+body.hidden-prices .hidden-prices-show{
+	display: block;
+}
+
+
+#belt-step.antistatic .antistatic-hidden,
+#belt-step.conductive .conductive-hidden,
+#belt-step.fda .fda-hidden,
+#belt-step.sharp .sharp-hidden,
+#belt-step .temp-hidden,
+#belt-step .angle-hidden,
+#belt-step .bflex-hidden,
+#belt-step .accumulation-hidden{
+	display: none;
+}
+
+
+@media (max-width: 800px){
+	#sidebar, #sidebar-spacer{
+		display: none;
+	}
+}

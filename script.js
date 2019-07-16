@@ -2612,9 +2612,9 @@ $( document ).ready( function(  ){
 		var dateNow = new Date(  );
 
 		var formatQuoteNum = 'CON'
-			+ dateNow.toLocaleDateString( 'en-us', {year: '2-digit'} )
-			+ dateNow.toLocaleDateString( 'en-us', {month: '2-digit'} )
-			+ dateNow.toLocaleDateString( 'en-us', {day: '2-digit'} )
+			+ ( dateNow.getFullYear(  ) % 100 )
+			+ ( '0' + ( dateNow.getMonth(  ) +　1 ) ).slice( -2 )
+			+ ( '0' + dateNow.getDate(  ) ).slice( -2 )
 			+ '-';
 
 
@@ -2883,7 +2883,7 @@ $( document ).ready( function(  ){
 			    	text: [
 			    		'Dear ' + $contactPref.val(  ) + ' ',
 			    		{
-			    			text: $contactFirst.val(  ) + ' ' + $contactLast.val(  ) + ',\n\n',
+			    			text: $contactLast.val(  ) + ',\n\n',
 			    			style: 'b'
 			    		},
 			    		'Thank you for your interest in our Belt Conveyors. As per your request, we are pleased to submit the following proposal:\n\n\n',
@@ -3025,16 +3025,17 @@ $( document ).ready( function(  ){
 		// Add End Letter
 		pdf.content.push({
 			stack: [
-				'Thank you for the opportunity to provide your company with our proposal.\n\n\n',
-				'A Yushin representative will contact you to discuss your project and answer any questions you may have. You can also contact our Sales Department at Salesinfo@yushin.com.\n\n\n',
-				'If you would like to place an order, submit your purchase order by e-mail to orderinfo@yushin.com or fax to 1-877-RI-Robot (1-877-747-6268).\n\n\n',
+				'\n',
+				'Thank you for the opportunity to provide your company with our proposal.\n\n',
+				'A Yushin representative will contact you to discuss your project and answer any questions you may have. You can also contact our Sales Department at Salesinfo@yushin.com.\n\n',
+				'If you would like to place an order, submit your purchase order by e-mail to orderinfo@yushin.com or fax to 1-877-RI-Robot (1-877-747-6268).\n\n',
 				'We look forward to working with you and your company.\n\n\n',
 				
 				'Sincerely,',
 				'Yushin America, Inc.'
 			],
 			lineHeight: 1.1,
-			margin: [0, 0, 0, 25]
+			margin: [0, 0, 0, 75]
 		})
 
 

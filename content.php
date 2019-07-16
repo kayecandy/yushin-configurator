@@ -346,9 +346,11 @@
 										<input id="conveyor-drive-head" name="conveyor-drive-type" type="radio" class="custom-control-input" value="head" data-label="Head Drive" required>
 										<span class="custom-control-indicator"></span>
 										<span class="custom-control-description">Head <b class="pricing-indicator">($)</b></span>
-
-
 									</label>
+
+									<div class="mt-3">
+										<small class="form-text text-muted">Standard head drive conveyors do <b>NOT</b> allow for reverse operation. If reverse operation is required, please inquire for a quotation.</small>
+									</div>
 								</div>
 
 								<div class="col-6">
@@ -361,7 +363,7 @@
 									</label>
 
 									<div class="mt-3">
-										<small class="form-text text-muted">Standard conveyors do not allow for reverse operation. If reverse operation is required, please inquire for a quotation.</small>
+										<small class="form-text text-muted">Allows reverse operation</small>
 									</div>
 
 									
@@ -994,7 +996,7 @@
 										</label>
 
 										<br>
-										<small class="font-italic text-danger">Applicable for Yushin Servo Robots only. If another Robot model supplier is used, special quotation is required.</small>
+										<small class="font-italic text-danger">Applicable for Yushin Servo Robots only. If another robot model or robot supplier is used, special quotation is required.</small>
 
 									</div>
 								</div>

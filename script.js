@@ -2890,7 +2890,7 @@ $( document ).ready( function(  ){
 			    		{
 			    			text:
 			    				'GUF-P2000 '
-			    				+ (($control1.is(':checked')) ? 'Index Conveyor' : 'Continuous Run Conveyor')
+			    				+ (($control1.is(':checked')) ? 'Indexing Conveyor' : 'Continuous Run Conveyor')
 			    			,
 			    			style: 'h4',
 			    			decoration: 'underline'

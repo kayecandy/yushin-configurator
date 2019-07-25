@@ -169,7 +169,7 @@ $( document ).ready( function(  ){
 
 	function priceFormat( number ){
 		// return '$' + parseFloat( Math.round( number * 100 ) / 100 ).toFixed( 2 );
-		return '$' + Math.round( number ).toFixed( 2 );
+		return '$' + Math.round( number ).toLocaleString() + '.00';
 	}
 
 	function updateSliderDeduct( delta ){

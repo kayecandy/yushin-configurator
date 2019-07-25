@@ -3057,7 +3057,7 @@ $( document ).ready( function(  ){
 
 		pdf.content.push( {
 			ul: [
-				'Standard delivery 2-3 weeks ARO',
+				'Standard delivery 2 to 3 weeks ARO',
 				'Delivery lead times do not include transit time',
 				'Conveyors are shipped via best way truck (freight charges prepaid and added) unless otherwise specified by the customer on the Purchase Order.',
 				'Conveyors are shipped assembled, in most compact position, unless otherwise specified.',
@@ -3077,7 +3077,7 @@ $( document ).ready( function(  ){
 		pdf.content.push( {
 			ul: [
 				'All items not specifically called out as included in this proposal are NOT included',
-				'Any changes to this quotation (i.e. belt material, length, motor type, speed, etc. will require a revised quotation prior to ordering.'
+				'Any changes to this quotation (i.e. belt material, length, motor type, speed, etc.) will require a revised quotation prior to ordering.'
 			],
 			style: 'endText',
 			margin: [40, 0, 0, 0]
@@ -3116,7 +3116,7 @@ $( document ).ready( function(  ){
 				'Purchase Orders must be issued to Yushin America, Inc. All remittances must be paid in U.S. currency.\n',
 				'If funds are to be drawing from a foreign source (outside the U.S.), payments must be wired to our banking institution by electronic wire transfer.\n',
 				'Invoices not paid within terms may be subject to a 1.5% interest retroactive from the  date (18% annually) and any collection and legal fees incurred.\n',
-				'Payment terms arebased on approved credit.\n',
+				'Payment terms are based on approved credit.\n',
 				'Prices are firm for 30 days.\n',
 				'Prices do not include any provision for state or local taxes unless otherwise stated.\n',
 				'Cancellation of purchase order(s) is subject to cancellation fees.\n'
@@ -3136,7 +3136,7 @@ $( document ).ready( function(  ){
 		} );
 
 		pdf.content.push( {
-			text: '\nF.O.B. Cranston RI, Port of Entry or Shipping Point (as described within)',
+			text: '\nF.O.B. Cranston RI, or Shipping Point (as described within)',
 			style: 'endTitle'
 		} );
 
@@ -3146,7 +3146,6 @@ $( document ).ready( function(  ){
 				'Actual deliveries will be determined when an order is received and will be based on current work load and after receipt of full information required as stated in the body of this quote.\n\n',
 				'An air-ride carrier must be used for all equipment shipments from the point of origin to the customer\'s facility (this includes all transfers made at a shipping company\'s terminal. If a customer-specified carrier does not provide this service, Yushin America will reroute the equipment as necessary.\n\n',
 				'If a customer-specified carrier does not arrive at YAI within 24 hours of being contacted for equipment pickup, a $40 storage fee per day, per robot may be assesed.\n\n',
-				'Buyer is not permitted to transfer products directly from port unless buyer provides documentation of port and security clearances.\n\n',
 				'Unless customer specifies and/or has included freight in their Purchase Order, freight will be added to the shipping invoice and must be paid in accordance with the terms of that invoice. Freight terms are stated on the Order Acknowledgement.'
 			],
 			style: 'endText',

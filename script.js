@@ -3187,7 +3187,9 @@ $( document ).ready( function(  ){
 				if( isRebound ){
 					alert( 'Thank you for your request. Our Sales Team will contact you shortly with your Quote information' );
 
-					// pdfFile.download( 'GUF-P2000_Price_Quote.pdf' );
+					if( isTestMode ){
+						pdfFile.download( 'GUF-P2000_Price_Quote.pdf' );
+					}
 
 				}else{
 					pdfFile.download( 'GUF-P2000_Price_Quote.pdf' );

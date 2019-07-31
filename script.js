@@ -3029,7 +3029,7 @@ $( document ).ready( function(  ){
 				'Thank you for the opportunity to provide your company with our proposal.\n\n',
 				'A Yushin representative will contact you to discuss your project and answer any questions you may have. You can also contact our Sales Department at Salesinfo@yushin.com.\n\n',
 				'If you would like to place an order, submit your purchase order by e-mail to orderinfo@yushin.com or fax to 1-877-RI-Robot (1-877-747-6268).\n\n',
-				'We look forward to working with you and your company.\n\n\n',
+				'We look forward to working with you and your company.\n\n',
 				
 				'Sincerely,',
 				'Yushin America, Inc.'
@@ -3057,8 +3057,8 @@ $( document ).ready( function(  ){
 
 		pdf.content.push( {
 			ul: [
-				'Standard delivery 2 to 3 weeks ARO',
-				'Delivery lead times do not include transit time',
+				'Standard delivery 2 to 3 weeks ARO.',
+				'Delivery lead times do not include transit time.',
 				'Conveyors are shipped via best way truck (freight charges prepaid and added) unless otherwise specified by the customer on the Purchase Order.',
 				'Conveyors are shipped assembled, in most compact position, unless otherwise specified.',
 				'Approval drawings may be required or requested. Stated lead times do not begin until after receipt of approved prints by Yushin.',
@@ -3076,7 +3076,7 @@ $( document ).ready( function(  ){
 
 		pdf.content.push( {
 			ul: [
-				'All items not specifically called out as included in this proposal are NOT included',
+				'All items not specifically called out as included in this proposal are NOT included.',
 				'Any changes to this quotation (i.e. belt material, length, motor type, speed, etc.) will require a revised quotation prior to ordering.'
 			],
 			style: 'endText',
@@ -3089,7 +3089,7 @@ $( document ).ready( function(  ){
 		} )
 
 		pdf.content.push( {
-			text: 'Under $10,000 - Net 30. Over $10,000 - 50% upon receipt of order, 50% Net 30.\n',
+			text: 'Under $10,000 - Net 30. Over $10,000 - 50% upon receipt of order, 50% Net 30\n',
 			style: 'endText',
 			margin: [40, 0, 0, 0]
 		} )

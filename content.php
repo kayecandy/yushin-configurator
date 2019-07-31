@@ -1172,7 +1172,7 @@
 							<div class="form-group row">
 								<label for="customer-email" class="col-3 col-form-label">Email</label>
 								<div class="col">
-									<input id="customer-email" type="text" class="form-control"  pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$" required>
+									<input id="customer-email" type="text" class="form-control"  pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$" required>
 									<div class="invalid-feedback">
 										This is a required field.
 									</div>

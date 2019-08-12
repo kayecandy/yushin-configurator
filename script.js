@@ -2627,16 +2627,15 @@ $( document ).ready( function(  ){
 		}
 
 
-
 		$.ajax( {
 			url: URL_API,
 			data: data,
 			method: 'POST',
 			success: function( num ){
-				generatePDF( parseInt( num ) );
+				generatePDF( num );
 			},
 			error: function(  ){
-				generatePDF( '00' );
+				generatePDF( formatQuoteNum + '00' );
 			}
 		} )
 
@@ -2648,18 +2647,12 @@ $( document ).ready( function(  ){
 		var dateNow = new Date(  );
 		var dateNowString = dateNow.toLocaleDateString( 'en-us', {month: 'long', day:'numeric', year:'numeric'} );
 		dateNowString = dateNowString.replace(/[^ -~]/g,'');
-
-		if( quoteNum == undefined || isNaN(quoteNum))
+		
+		if( !quoteNum )
 			quoteNum = '00';
 
 
-
-		var formatQuoteNum = 'CON'
-			+ dateNow.toLocaleDateString( 'en-us', {year: '2-digit'} )
-			+ dateNow.toLocaleDateString( 'en-us', {month: '2-digit'} )
-			+ dateNow.toLocaleDateString( 'en-us', {day: '2-digit'} )
-			+ '-'
-			+ quoteNum;
+		var formatQuoteNum = quoteNum;
 
 		var headerTableLayout = {
 			paddingLeft: function(){return 0;},

@@ -15,7 +15,7 @@
 
 			$stmt->execute();
 
-			return $conn->lastInsertId();
+			return $_POST['format_quote_num'] . $conn->lastInsertId();
 		}catch(PDOException $e){
 			echo $e->getMessage();
 

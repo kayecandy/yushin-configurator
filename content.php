@@ -1193,7 +1193,7 @@
 							<div class="form-group row">
 								<div class="col">
 									<button type="button" class="btn btn-primary btn-prev">Previous</button>
-									<button id="finish-btn" type="submit" class="btn btn-primary float-right btn-submit">Finish</button>
+									<button id="finish-btn" type="submit" class="btn btn-primary float-right btn-submit">View Summary</button>
 								</div>
 							</div>
 
@@ -1369,7 +1369,12 @@
 									<td>
 										<span class="none-1">Continuous Run
 											<br></span>
-										<span class="control-1">Robot Interface Cable and Indexing Option</span>
+										<span class="control-1">
+											Robot Interface Cable and Indexing Option<br>
+
+											<!-- ADD YOUR TEXT HERE -->
+											<small class="font-weight-bold text-danger">Applicable for Yushin Servo Robots only. If another robot model or robot supplier is used, special quotation is required.</small>
+										</span>
 									</td>
 								</tr>
 								<tr>
@@ -1791,7 +1796,7 @@
 						<div class="pdf-table  end-price">
 							<h3  class="d-inline-block m-0 show-price">END PRICE</h3>
 							&nbsp;
-							<button type="button" onclick="generatePDF()" class="btn btn-secondary">Generate PDF</button>
+							<button type="button" onclick="generatePDF()" class="btn btn-secondary">Generate QUOTE</button>
 
 							<div class="float-right price-top font-weight-bold"><span class="total-price"></span></div>
 						</div>

@@ -508,7 +508,8 @@ body.hidden-prices .hidden-prices-show{
 
 
 @media (max-width: 800px){
-	#sidebar, #sidebar-spacer{
+	#sidebar, #sidebar-spacer,
+	body.past-header #sidebar-spacer{
 		display: none;
 	}
 }

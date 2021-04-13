@@ -237,7 +237,11 @@
 			"priceIncrease2": 0.1,
 			"packaging": 0.02,
 			"discount": 0.4236,
-			"yushinMarkup": 1.56
+			"mkMarkup": 1.04,
+			"yushinMarkup": 1.57,
+			"option1Markup": 1.06,
+			"option2Markup": 1.06,
+			"option3Markup": 1.06
 		}
 		
 	},

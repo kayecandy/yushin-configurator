@@ -1023,23 +1023,32 @@ $( document ).ready( function(  ){
 
 	function calculateControl( control1, control2, control3 ){
 		var controls = data['controls'];
+		var n = data['calculations']['pricing'];
 
 		var total = 0;
 
+		var controlPrice = {...controls};
+
+
+		// Add control markup
+		controlPrice['control1'] *= n['option1Markup'];
+		controlPrice['control2'] *= n['option2Markup'];
+		controlPrice['control3'] *= n['option3Markup'];
+
 		if( control1 )
-			total += controls['control1'];
+			total += controlPrice['control1'];
 
 		if( control2 )
-			total += controls['control2'];
+			total += controlPrice['control2'];
 
 		if( control3 )
-			total += controls['control3'];
+			total += controlPrice['control3'];
 
 
 		return {
-			'control1': controls['control1'],
-			'control2': controls['control2'],
-			'control3': controls['control3'],
+			'control1': controlPrice['control1'],
+			'control2': controlPrice['control2'],
+			'control3': controlPrice['control3'],
 			'price': total
 		};
 	}
@@ -1056,7 +1065,7 @@ $( document ).ready( function(  ){
 
 		var listPrice = priceInc2 + packagingPrice;
 
-		var yushinNet = Math.ceil( listPrice * ( 1 - n['discount'] ) );
+		var yushinNet = Math.ceil( listPrice * ( 1 - n['discount'] ) ) * n['mkMarkup'];
 
 		var price = yushinNet * n['yushinMarkup'];
 

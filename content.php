@@ -1628,6 +1628,26 @@
 								<div class="ml-5 w-75 pdf-subtext">Surface Color: <span class="belt-values belt-surface-color"></span></div>
 								<div class="ml-5 w-75 pdf-subtext">Max Temp[&#176;F]: <span class="belt-values belt-max-temp"></span></div>
 								<div class="ml-5 w-75 pdf-subtext">Notes: <span class="belt-values belt-notes"></span></div>
+					
+								<div class="ml-5 mt-3 w-75 pdf-subtext">
+									Belt Width:
+									<span class="belt-na">n.a.</span>
+									<span class="belt-label">
+										<span class="belt-width-mm"></span> mm 
+										( <span class="belt-width-in"></span> in )
+									</span>
+								</div>
+
+								<div class="ml-5 w-75 pdf-subtext">
+									Belt Width:
+									<span class="belt-na">n.a.</span>
+									<span class="belt-label">
+										<span class="belt-length-mm"></span> mm 
+										( <span class="belt-length-in"></span> in )
+									</span>
+								</div>
+
+								
 								<div class="ml-5 price-top"><b>Sub-Total Price:<span class="belt-total-price float-right"></span></b></div>
 								<br>
 							</div>

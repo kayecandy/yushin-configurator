@@ -1489,6 +1489,7 @@ $( document ).ready( function(  ){
 		if( $selected.length > 0 ){
 
 			var beltWidthmm = getBeltWidthMm( $width.val(  ) );
+			var beltLengthmm = getBeltLengthMm( $drive.filter( ':checked' ).val(  ), $length.data('ft-val') );
 
 			$( '#pricing-step .belt-number' ).text( $( '.belt-num', $selected ).text(  ) );
 			$( '#pricing-step .belt-color' ).text( $( '.belt-color', $selected ).text(  ) );
@@ -1496,6 +1497,9 @@ $( document ).ready( function(  ){
 
 			$( '#pricing-step .belt-width-mm' ).text( beltWidthmm );
 			$( '#pricing-step .belt-width-in' ).text( Math.round( beltWidthmm / IN_TO_MM ) );
+
+			$( '#pricing-step .belt-length-mm' ).text( beltLengthmm );
+			$( '#pricing-step .belt-length-in' ).text( Math.round( beltLengthmm / IN_TO_MM ) );
 
 
 			$( '#pricing-step .belt-label' ).removeClass( 'd-none' );
@@ -2347,7 +2351,7 @@ $( document ).ready( function(  ){
 		}
 
 
-		$( '#conveyor-drive-version' ).val( '' );
+		$driveVersion.val( '' );
 		$outfeed.val( '' );
 
 	} );
@@ -2359,6 +2363,8 @@ $( document ).ready( function(  ){
 		}else{
 			$( '#steps-container' ).removeClass( 'head-standard' );
 		}
+
+		updateBeltPrices();
 
 		$voltage.val( '115' );
 	} )

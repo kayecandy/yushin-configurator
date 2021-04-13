@@ -622,10 +622,13 @@ $( document ).ready( function(  ){
 		var mmLength = Math.round( length * FT_TO_MM );
 
 		// Material
-		if( speedmpm < 30.5 ){
-			if( mmWidth >= 100 && mmWidth <= 300 )
-				material = 'plastic';
-		}
+		// Spreadsheet v1.20 update - support roll material would
+		// only be steel
+
+		// if( speedmpm < 30.5 ){
+		// 	if( mmWidth >= 100 && mmWidth <= 300 )
+		// 		material = 'plastic';
+		// }
 		prices = supportRolls['values'][material];
 
 		// Number

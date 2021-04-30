@@ -28,7 +28,7 @@
 					
 				</div>
 			</div>
-			<div id="steps-container" class="col px-4 py-5">
+			<div id="steps-container" class="col px-0 px-md-4 py-5">
 
 
 
@@ -36,16 +36,16 @@
 
 
 					<!-- Start -->
-					<div class="step px-4">
+					<div class="step pl-0 pl-md-4">
 
 						<form class="step-form" novalidate>
 
-							<div class="row">
-								<div class="col-6">
+							<div class="row justify-content-center">
+								<div class="col-7 col-lg-5 mb-5">
 									<img class="w-100" src="./assets/yushin_standard.png">
 								</div>
 
-								<div class="col">
+								<div class="col" style="min-width: 400px;">
 									<div class="text-center"><i>Our conveyor standards</i></div>
 									<br>
 
@@ -151,7 +151,7 @@
 					</div>
 
 					<!-- Specifications -->
-					<div class="step px-4">
+					<div class="step pl-0 pl-md-4">
 
 						<div class="note-standard">* Items in bold are Yushin Standards and recommended values.</div>
 
@@ -186,7 +186,7 @@
 
 								    <small class="form-text text-muted">Longer belt options are available, but must be quoted on a case by case basis. Please inquire for a quotation if a longer conveyor is needed.</small>
 								</div>
-								<div class="col-2">
+								<div class="col-2 pl-0">
 									<select id="length-unit" class="form-control" data-old-val="in" required>
 										<option value="in" data-from-ft="12" selected>in.</option>
 										<option value="ft" data-from-ft="1">ft.</option>
@@ -328,7 +328,7 @@
 
 
 					<!-- Drive -->
-					<div class="step px-4">
+					<div class="step pl-0 pl-md-4">
 
 						<div class="note-standard">* Items in bold are Yushin Standards and recommended values.</div>
 
@@ -414,13 +414,21 @@
 								<label for="conveyor-drive-version" class="col-3 col-form-label">Drive Version <span class="help-text btn" data-field="drive-version">?</span></label>
 								<div class="col">
 									<select id="conveyor-drive-version" class="form-control" required>
+
 										<option value="" selected disabled>Choose...</option>
-										<option value="standard" class="input-standard center-drive-hidden" data-version="AC" data-code="AC-01" data-label="Version AC, mounted below">Version AC (below) <b class="pricing-indicator">($)</b></option>
-										<option class="center-drive-hidden" value="remote" data-version="AC" data-code="AC-01" data-label="Version AC, mounted above">Version AC (above) <b class="pricing-indicator">($)</b></option>
-										<option value="side" class="center-drive-hidden" data-version="AM" data-code="AM-01" data-label="Version AM">Version AM <b class="pricing-indicator">($$$)</b></option>
-										<option value="top" class="center-drive-hidden" data-version="AU" data-code="AU-01" data-label="Version AU, mounted below">Version AU (below) <b class="pricing-indicator">($$)</b></option>
-										<option value="standard" class="center-drive-hidden" data-version="AU" data-code="AU-01" data-label="Version AU, mounted above">Version AU (above) <b class="pricing-indicator">($$)</b></option>
-										<option value="standard" class="head-drive-hidden" data-version="BC" data-code="BC-01-01" data-label="Version BC">Version BC</option>
+
+										<option data-drive-id="ac-below" value="standard" class="input-standard center-drive-hidden" data-version="AC" data-code="AC-01" data-label="Version AC, mounted below">Version AC (below) <b class="pricing-indicator">($)</b></option>
+
+										<option data-drive-id="ac-above" class="center-drive-hidden" value="remote" data-version="AC" data-code="AC-01" data-label="Version AC, mounted above">Version AC (above) <b class="pricing-indicator">($)</b></option>
+
+										<option data-drive-id="am" value="side" class="center-drive-hidden" data-version="AM" data-code="AM-01" data-label="Version AM">Version AM <b class="pricing-indicator">($$$)</b></option>
+
+										<option data-drive-id="au-below" value="top" class="center-drive-hidden" data-version="AU" data-code="AU-01" data-label="Version AU, mounted below">Version AU (below) <b class="pricing-indicator">($$)</b></option>
+
+										<option data-drive-id="au-above" value="standard" class="center-drive-hidden" data-version="AU" data-code="AU-01" data-label="Version AU, mounted above">Version AU (above) <b class="pricing-indicator">($$)</b></option>
+
+										<option data-drive-id="bc" value="standard" class="head-drive-hidden" data-version="BC" data-code="BC-01-01" data-label="Version BC">Version BC</option>
+
 									</select>
 									<div class="invalid-feedback">
 										This is a required field.
@@ -511,7 +519,7 @@
 
 					<!-- Infeed/Outfeed -->
 					<?php if( $hasInfeedOutfeed ): ?>
-						<div class="step px-4">
+						<div class="step pl-0 pl-md-4">
 							<div class="note-standard">* Items in bold are Yushin Standards and recommended values.</div>
 
 							<form class="step-form" novalidate>
@@ -589,7 +597,7 @@
 
 
 					<!-- Belting -->
-					<div id="belt-step" class="step px-4">
+					<div id="belt-step" class="step pl-0 pl-md-4">
 						<div class="note-standard">* Items in bold are Yushin Standards and recommended values.</div>
 
 						<form id="belt-form" class="step-form" novalidate>
@@ -705,7 +713,7 @@
 
 
 					<!-- Side Rails -->
-					<div id="side-rails-step" class="step px-4">
+					<div id="side-rails-step" class="step pl-0 pl-md-4">
 						<div class="note-standard">* Items in bold are Yushin Standards and recommended values.</div>
 
 						<form class="step-form" novalidate>
@@ -829,7 +837,7 @@
 
 
 					<!-- Stands -->
-					<div class="step px-4">
+					<div class="step pl-0 pl-md-4">
 						<div class="note-standard">* Items in bold are Yushin Standards and recommended values.</div>
 
 						<form class="step-form" novalidate>
@@ -957,7 +965,7 @@
 
 
 					<!-- Controls -->
-					<div id="controls-step" class="step px-4">
+					<div id="controls-step" class="step pl-0 pl-md-4">
 						<form class="step-form" novalidate>
 							<div class="container">
 								<h2>Controls</h2>
@@ -1065,7 +1073,7 @@
 
 					<!-- Accessories -->
 					<?php if( $hasAccessories ): ?>
-						<div id="accessories-step" class="step px-4">
+						<div id="accessories-step" class="step pl-0 pl-md-4">
 							<form class="step-form" novalidate>
 								<div style="height: 350px; overflow-y: auto">
 									<table class="table table-striped table-hover">
@@ -1104,7 +1112,7 @@
 
 
 					<!-- Customer Information -->
-					<div id="customer-info-step" class="step px-4">
+					<div id="customer-info-step" class="step pl-0 pl-md-4">
 						<form class="step-form" novalidate>
 
 							<div class="form-group row">
@@ -1204,7 +1212,7 @@
 
 
 					<!-- Pricing -->
-					<div id="pricing-step" class="step px-4">
+					<div id="pricing-step" class="step pl-0 pl-md-4">
 
 						<div class="hidden-prices-show">
 							

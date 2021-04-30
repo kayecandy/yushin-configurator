@@ -31,6 +31,10 @@
 
 		<?php if( !empty( $_GET['test_mode'] ) && $_GET['test_mode'] == 1 ): ?>
 			var isTestMode = true;
+
+			var URL_TEST = '<?php echo !empty($_GET['test_data']) ? $_GET['test_data'] : URL_TEST_DEFAULT ?>';
+
+
 		<?php else: ?>
 			var isTestMode = false;
 
@@ -40,6 +44,9 @@
 		var URL_API = '<?php echo URL_API; ?>';
 		var URL_DATA = '<?php echo URL_DATA; ?>';
 		var URL_MAIL = '<?php echo URL_MAIL; ?>';
+
+		
+
 
 	</script>
 

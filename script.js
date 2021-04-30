@@ -2211,36 +2211,65 @@ $( document ).ready( function(  ){
 	function fillDefault(  ){
 		if( confirm( 'Would you like to fill the fields with default values?' ) ){
 
+			$.ajax({
+				url: URL_TEST,
+				dataType: 'json',
+				success: function(json){
+
+					var {
+						lengthUnit = 'in'
+					} = json;
+					
 					// Defaults
 					$acceptTerms.prop( 'checked', true );
 
-			$width.val( 7.87 );
-			$length.val( 120 );
-			$voltage.val( '115' );
-			$slider.val( 'galvanized' );
-			$angle.val( '0' );
+					$width.val( json.width );
+					$length.val( json.length );
+					$lengthUnit.val( lengthUnit );
+
+					$slider.val( json.slider );
+					$angle.val( json.angle );
+					$load.val( json.load );
+					$opsMode.val( json.accumulation );
 
 
-			$( '#conveyor-drive-head' ).click(  );
-					$driveVersion.val( 'standard' );
-			$driveLocation.val( 'left' );
+					$( '#conveyor-drive-' + json.drive ).click(  );
+					$driveLocation.val( json.driveLocation );
+					$driveVersion.val( json.driveVersion );
 
+					
+					$beltRows.filter( '[data-belt-num=' + json.belt + ']' ).addClass( 'selected' );
+
+
+
+					/**
+					 * Not in yushin configurator
+					 */
+
+					// $voltage.val( '115' );
+					// $speed.val( 60 );
+					// $speedMode.val( 'variable' );
 					$infeed.val( '1' );
 
-			$opsMode.val( 'continuous' );
-			$speedMode.val( 'variable' );
-			$speed.val( 60 );
-			$load.val( 20 );
 
-					$sideRail.val( 'none' );
+					$sideRail.val( json.sideRails );
+					$( '#conveyor-side-rails-system-' + json.railSystem ).click(  );
+					$sideRailHeight.val( json.railsHeight ); 
 
 
-					$( '#conveyor-stand-none' ).click(  );
-					// $standHeight.val( 40 );
+					$( '#conveyor-stand-' + json.stands ).click(  );
+					$standHeight.val( json.standsHeight );
+					$standQuantity.val( json.standsQuantity );
 
-					$hasCasters.prop( 'checked', true );
+					if( json.hasCasters )
+						$hasCasters.prop( 'checked', true );
+					else if( json.hasBrackets )
+						$hasLeveling.prop( 'checked', true );
 
-					$( $beltRows[1] ).addClass( 'selected' );
+
+
+
+					
 
 					$width.trigger( 'change' );
 					$length.trigger( 'change' );
@@ -2266,6 +2295,9 @@ $( document ).ready( function(  ){
 
 					updateBeltPrices(  );
 				}
+
+			})
+		}
 	}
 
 
@@ -2324,6 +2356,7 @@ $( document ).ready( function(  ){
 					$new.addClass( 'sharp-hidden' );
 
 
+				$new.attr( 'data-belt-num', belt['beltNumber'][i] );
 				$new.attr( 'data-min-temp', belt['minTemp'][i] );
 				$new.attr( 'data-max-temp', belt['maxTemp'][i] );
 
@@ -2610,7 +2643,7 @@ $( document ).ready( function(  ){
 
 	$driveVersion.change( function(  ){
 
-		if( $( this ).val(  ) == 'standard' && $drive.filter( ':checked' ).val(  ) == 'head' ){
+		if( $( this ).data( 'drive-value' ) == 'standard' && $drive.filter( ':checked' ).val(  ) == 'head' ){
 			$( '#steps-container' ).addClass( 'head-standard' );
 		}else{
 			$( '#steps-container' ).removeClass( 'head-standard' );

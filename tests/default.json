@@ -1,0 +1,26 @@
+{
+    "width": 7.87,
+    "length": 3000,
+    "lengthUnit": "mm",
+    "slider": "galvanized",
+    "angle": 0,
+    "load": 41,
+    "accumulation": "continuous",
+
+    "drive": "head",
+    "driveLocation": "left",
+    "driveVersion": "ac-below",
+
+    "belt": "460445",
+
+    "sideRails": "fixed",
+    "railSystem": "sf13",
+    "railsHeight": 50,
+
+    "stands": "leveling",
+    "standsHeight": "48",
+    "standsQuantity": 3,
+
+    "hasCasters": true
+
+}

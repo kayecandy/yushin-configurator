@@ -417,17 +417,17 @@
 
 										<option value="" selected disabled>Choose...</option>
 
-										<option data-drive-id="ac-below" value="standard" class="input-standard center-drive-hidden" data-version="AC" data-code="AC-01" data-label="Version AC, mounted below">Version AC (below) <b class="pricing-indicator">($)</b></option>
+										<option value="ac-below" data-drive-value="standard" class="input-standard center-drive-hidden" data-version="AC" data-code="AC-01" data-label="Version AC, mounted below">Version AC (below) <b class="pricing-indicator">($)</b></option>
 
-										<option data-drive-id="ac-above" class="center-drive-hidden" value="remote" data-version="AC" data-code="AC-01" data-label="Version AC, mounted above">Version AC (above) <b class="pricing-indicator">($)</b></option>
+										<option value="ac-above" class="center-drive-hidden" data-drive-value="remote" data-version="AC" data-code="AC-01" data-label="Version AC, mounted above">Version AC (above) <b class="pricing-indicator">($)</b></option>
 
-										<option data-drive-id="am" value="side" class="center-drive-hidden" data-version="AM" data-code="AM-01" data-label="Version AM">Version AM <b class="pricing-indicator">($$$)</b></option>
+										<option value="am" data-drive-value="side" class="center-drive-hidden" data-version="AM" data-code="AM-01" data-label="Version AM">Version AM <b class="pricing-indicator">($$$)</b></option>
 
-										<option data-drive-id="au-below" value="top" class="center-drive-hidden" data-version="AU" data-code="AU-01" data-label="Version AU, mounted below">Version AU (below) <b class="pricing-indicator">($$)</b></option>
+										<option value="au-below" data-drive-value="top" class="center-drive-hidden" data-version="AU" data-code="AU-01" data-label="Version AU, mounted below">Version AU (below) <b class="pricing-indicator">($$)</b></option>
 
-										<option data-drive-id="au-above" value="standard" class="center-drive-hidden" data-version="AU" data-code="AU-01" data-label="Version AU, mounted above">Version AU (above) <b class="pricing-indicator">($$)</b></option>
+										<option value="au-above" data-drive-value="standard" class="center-drive-hidden" data-version="AU" data-code="AU-01" data-label="Version AU, mounted above">Version AU (above) <b class="pricing-indicator">($$)</b></option>
 
-										<option data-drive-id="bc" value="standard" class="head-drive-hidden" data-version="BC" data-code="BC-01-01" data-label="Version BC">Version BC</option>
+										<option value="bc" data-drive-value="standard" class="head-drive-hidden" data-version="BC" data-code="BC-01-01" data-label="Version BC">Version BC</option>
 
 									</select>
 									<div class="invalid-feedback">

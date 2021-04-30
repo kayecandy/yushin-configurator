@@ -46,6 +46,10 @@
 		var URL_DATA = '<?php echo URL_DATA; ?>';
 		var URL_MAIL = '<?php echo URL_MAIL; ?>';
 
+		<?php if(!empty($_GET['test_data'])): ?>
+			var URL_TEST = '<?php echo $_GET['test_data'] ?>';
+		<?php endif; ?>
+
 	</script>
 
 

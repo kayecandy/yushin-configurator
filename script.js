@@ -1,17 +1,17 @@
 $( document ).ready( function(  ){
 	var data;
 
-	var FT_TO_M = 0.3048;
-	var FT_TO_MM = 304.8;
-	var FT_TO_IN = 12;
+	const FT_TO_M = 0.3048;
+	const FT_TO_MM = 304.8;
+	const FT_TO_IN = 12;
 
-	var IN_TO_MM = 25.4;
+	const IN_TO_MM = 25.4;
 
-	var KG_TO_LBS = 2.2;
+	const KG_TO_LBS = 2.2;
 
-	var DEG_TO_RAD = Math.PI / 180;
+	const DEG_TO_RAD = Math.PI / 180;
 
-	var MPM_TO_FPM = 3.2808;
+	const MPM_TO_FPM = 3.2808;
 
 
 
@@ -435,6 +435,13 @@ $( document ).ready( function(  ){
 	}
 
 	function testOutfeedTail( outfeedTail, widthmm, lengthmm, version ){
+		isTestMode && console.log('test outfeed tail:', [
+			[outfeedTail['version'], version],
+			outfeedTail['version'] != version,
+			outfeedTail['minBB'] > widthmm || outfeedTail['maxBB'] < widthmm,
+			outfeedTail['minOAL'] > lengthmm || outfeedTail['maxOAL'] < lengthmm
+		]);
+
 		if( outfeedTail['version'] != version )
 			return false;
 
@@ -601,11 +608,26 @@ $( document ).ready( function(  ){
 		var frame = data['frame'];
 		var i, j;
 
-		for( i=0; i < frame['conveyorWidth'].length - 1 && width > frame['conveyorWidth'][i]; i++ );
+
+		for( i=0; i < frame['conveyorWidth'].length - 1 
+			&& width > frame['conveyorWidth'][i]; i++ );
+
+
+
 		for( j=0; j < frame['conveyorLength'].length - 1 && length > frame['conveyorLength'][j]; j++ );
 
+		var response = frame['values'][slider][ j*frame['conveyorWidth'].length + i ];
 
-		return frame['values'][slider][ j*frame['conveyorWidth'].length + i ];
+		
+		isTestMode && console.log(
+			'frame price', 
+			width, 
+			length, 
+			slider, 
+			response
+		);
+
+		return response;
 	}
 
 	function calculateSupportRollsPrice( drive, width, length, speed ){
@@ -641,21 +663,38 @@ $( document ).ready( function(  ){
 		// Price
 		for( i=0; i < supportRolls['conveyorWidth'].length - 1 && width > supportRolls['conveyorWidth'][i]; i++ );
 
-
-		return {
+		var response = {
 			"number": number,
 			"price": prices[i]
-		}
+		};
+
+		
+		isTestMode && console.log(
+			'support rolls',
+			drive,
+			width,
+			length,
+			speed,
+			response
+		);
+
+		return response;
 	}
 
 	
 
-	function calculateDriveVersion( drive, driveVersion, driveLocation, voltage, widthmm, adapterPlate, motorManufacturer ){
+	function calculateDriveVersion( drive, driveVersion, driveLocation, voltage, widthmm, adapterPlate, motorManufacturer ){ 
 		var driveVersions = data['driveVersion'];
 		var n = data['calculations']['BOM'];
 
 		var isPlateHeavy = getIsPlateHeavy( driveVersion, n['quote16'] );
 		var isBodine = getIsBodine( motorManufacturer, adapterPlate );
+
+		isTestMode && console.log(
+			'drive version params', 
+
+			isPlateHeavy, isBodine, n['isASAbove'], n['isStainlessSteelDrums'], n['isVGuidedDrums'], widthmm, driveVersion, n['driveShafts'], driveLocation
+		);
 
 		for( var i=0; i < driveVersions['BOM'].length; i++ ){
 			var driveObj = getProperties( driveVersions, i );
@@ -666,16 +705,33 @@ $( document ).ready( function(  ){
 
 				driveObj['labelWidthVars'] = getCPT( driveObj['widthVars'], driveObj['cptWidthVars'], widthmm );
 
-				return getDrivePrice( driveObj );
+				var response = getDrivePrice( driveObj );
+
+				isTestMode && console.log(
+					'drive version',
+					drive, driveVersion, driveLocation, voltage, widthmm, adapterPlate, motorManufacturer,
+					response
+				);
+		
+				return response;
 			}
 		}
 
-		return {
+		var response = {
 			'price': {
 				'drive': 0,
 				'widthVars': 0
 			}
 		};
+		
+
+		isTestMode && console.log(
+			'drive version',
+			drive, driveVersion, driveLocation, voltage, widthmm, adapterPlate, motorManufacturer,
+			response
+		);
+
+		return response;
 
 	}
 
@@ -688,6 +744,11 @@ $( document ).ready( function(  ){
 		var isSteelDriveDrum = getIsSteelDriveDrum( drive, load, speed );
 		var isLaggedDriveDrum = getIsLaggedDriveDrum( isSteelDriveDrum );
 
+		isTestMode && console.log(
+			'drive drum params:',
+			driveDrumOption, isSteelDriveDrum, isLaggedDriveDrum, n['isStainlessSteelDrums'], n['isVGuidedDrums'], widthmm
+		)
+
 
 		for( var i=0; i < driveDrums['BOM'].length; i++ ){
 			var driveDrum = getProperties( driveDrums, i );
@@ -696,28 +757,57 @@ $( document ).ready( function(  ){
 
 				driveDrum['labelBOM'] = getCPT( driveDrum['BOM'], driveDrum['cptBOM'], widthmm );
 
-				return getDriveDrumPrice( driveDrum );
+				var response = getDriveDrumPrice( driveDrum );
+
+				isTestMode && console.log(
+					'drive drum:',
+					drive, driveVersion, widthmm, load, speed,
+					response
+				)
+				return response;
 
 			}
 		}
 
-		return {
+		var response = {
 			'price': 0
 		}
+
+		isTestMode && console.log(
+			'drive drum',
+			drive, driveVersion, widthmm, load, speed,
+			response
+		)
+
+		return response;
 	}
 
 	function calculateDriveDrumSurface( drive, load, speed ){
 		var steel = 'steel';
 		var rubber = 'rubber coated';
 
-		loadKg = load / KG_TO_LBS;
+		var loadKg = load / KG_TO_LBS;
+
+		var response;
 
 		if( ( drive == 'head' && loadKg > 75 )
 			|| ( drive == 'center' && loadKg > 30 ) 
-			|| ( speed > 80 ) )
-			return rubber;
+			|| ( speed > 80 ) ){
 
-		return steel;
+				response = rubber;
+		}
+		else{
+			response = steel;
+		}
+
+		
+		isTestMode && console.log(
+			'drive drum surface:',
+			drive, load, speed,
+			response
+		)
+
+		return response;
 	}
 
 
@@ -730,16 +820,32 @@ $( document ).ready( function(  ){
 			if( testInfeedTail( infeedTail, widthmm, lengthmm, version ) ){
 				infeedTail['labelBOM'] = getCPT( infeedTail['BOM'], infeedTail['cptBOM'], widthmm );
 
-				return getInfeedTailPrice( infeedTail );
+				var response = getInfeedTailPrice( infeedTail );
+
+				isTestMode && console.log(
+					'infeed tail:',
+					widthmm, lengthmm, version,
+					response
+				);
+
+				return response;
 			}
 
 		}
 
 
-		return {
+		var response = {
 			'labelBOM': 'No Infeed Tail',
 			'price': 0
 		};
+
+		isTestMode && console.log(
+			'infeed tail:',
+			widthmm, lengthmm, version,
+			response
+		);
+
+		return response;
 	}
 
 
@@ -752,14 +858,31 @@ $( document ).ready( function(  ){
 			if( testInfeedWidthVars( infeedWidthVar, widthmm, version ) ){
 				infeedWidthVar['labelBOM'] = getCPT( infeedWidthVar['BOM'], infeedWidthVar['cptBOM'], widthmm );
 
-				return getInfeedTailPrice( infeedWidthVar );
+				response = getInfeedTailPrice( infeedWidthVar );
+
+				isTestMode && console.log(
+					'infeed width vars',
+					widthmm, version,
+					response
+				);
+
+				return response;
 			}
+
 
 		}
 
-		return {
+		response = {
 			'price': 0
 		};
+
+		isTestMode && console.log(
+			'infeed width vars',
+			widthmm, version,
+			response
+		);
+
+		return response;
 	}
 
 	function calculateOutfeedWidthVars( widthmm, version ){
@@ -771,14 +894,30 @@ $( document ).ready( function(  ){
 			if( testOutfeedWidthVars( outfeedWidthVar, widthmm, version ) ){
 				outfeedWidthVar['labelBOM'] = getCPT( outfeedWidthVar['BOM'], outfeedWidthVar['cptBOM'], widthmm );
 
-				return getInfeedTailPrice( outfeedWidthVar );
+				response = getInfeedTailPrice( outfeedWidthVar );
+				
+				isTestMode && console.log(
+					'outfeed width vars',
+					widthmm, version,
+					response
+				);
+
+				return response;
 			}
 
 		}
 
-		return {
+		response = {
 			'price': 0
 		};
+
+		isTestMode && console.log(
+			'outfeed width vars',
+			widthmm, version,
+			response
+		);
+
+		return response;
 	}
 
 
@@ -791,18 +930,35 @@ $( document ).ready( function(  ){
 			if( testOutfeedTail( outfeedTail, widthmm, lengthmm, version ) ){
 				outfeedTail['labelBOM'] = getCPT( outfeedTail['BOM'], outfeedTail['cptBOM'], widthmm );
 
-				return getInfeedTailPrice( outfeedTail );
+				response = getInfeedTailPrice( outfeedTail );
+
+				isTestMode && console.log(
+					'outfeed tail',
+					widthmm,lengthmm, version,
+					response
+				);
+
+				return response;
 			}
 		}
 
-		return {
+		response = {
 			'price': 0
 		};
+
+		isTestMode && console.log(
+			'outfeed tail',
+			widthmm,lengthmm, version,
+			response
+		);
+
+		return response;
 	}
 
 
 
 	function calculateMotors( drive, voltage, opsMode, speedMode, speed, load, width, length, angle ){
+
 		var motors = data['motors'];
 		var n = data['calculations']['motor'];
 
@@ -840,7 +996,15 @@ $( document ).ready( function(  ){
 
 
 			if( test == 1 ){
-				return getMotorPrice( motor );
+				var response = getMotorPrice( motor );
+
+				isTestMode && console.log(
+					'motors',
+					drive, voltage, opsMode, speedMode, speed, load, width, length, angle,
+					response
+				);
+
+				return response;
 			}else if( test == 2 && test2 == undefined ){
 				test2 = getMotorPrice( motor );
 			}else if( test == 3 && test3 == undefined ){
@@ -848,22 +1012,33 @@ $( document ).ready( function(  ){
 			}
 		}
 
+		var response;
+
 		if( test2 != undefined )
-			return test2;
+			response = test2;
 
-		if( test3 != undefined )
-			return test3;
+		else if( test3 != undefined )
+			response = test3;
 
+		else 
+			response = {
+				'price': 0,
+				'note': 'Calculated horse power is invalid'
+			};
 
-		return {
-			'price': 0,
-			'note': 'Calculated horse power is invalid'
-		};
+		isTestMode && console.log(
+			'motors',
+			drive, voltage, opsMode, speedMode, speed, load, width, length, angle,
+			response
+		);
+
+		return response;
 		
 
 	}
 
 	function calculateSideRails( sideRail, length, railSystem, railHeight, hasUHMW, width ){
+
 		var sideRails = data['sideRails'][sideRail];
 		var i, j;
 
@@ -938,28 +1113,46 @@ $( document ).ready( function(  ){
 		}
 
 		
-		return {
+		var response = {
 			'name'	: sideRails['name'],
 			'price' : price,
 			'OALmm' : oal,
 			'desc1' : desc1,
 			'desc2' : desc2
 		}
+
+		isTestMode && console.log(
+			'side rails:',
+			sideRail, length, railSystem, railHeight, hasUHMW, width, $length.data( 'slider-deduct' ),
+			response
+		);
+
+		return response;
 	}
 
 
 	function calculateStands( standType, standHeight, standQuantity, width ){
+
 		var stands = data['stands'][standType];
 		var j, k;
 
+		console.log(stands, standType);
 
 		if( standType == 'none' ){
-			return {
+			var response = {
 				'name'		: 'No Stand',
 				'basePrice' : 0,
 				'price'		: 0,
 				'quantity'	: 0
 			}
+
+			isTestMode && console.log(
+				'stands:',
+				standType, standHeight, standQuantity, width,
+				response
+			);
+	
+			return response;
 		}
 
 
@@ -970,39 +1163,73 @@ $( document ).ready( function(  ){
 		var price = stands['price'][ stands['conveyorWidth'].length * j + k ];
 
 
-		return {
+		var response = {
 			'name'		: stands['name'],
 			'basePrice'	: price,
 			'quantity'	: standQuantity,
 			'price'		: standQuantity * price
 		};
 
+		isTestMode && console.log(
+			'stands:',
+			standType, standHeight, standQuantity, width,
+			response
+		);
+
+		return response;
+
 	}
 
 	function calculateStandsCaster( standQuantity ){
-		return {
+		var response = {
 			'basePrice'	: data['standsCaster']['price'],
 			'quantity'	: standQuantity,
 			'price'		: data['standsCaster']['price'] * standQuantity
 		};
+
+		isTestMode && console.log(
+			'stands caster',
+			standQuantity,
+			response
+		);
+
+		return response;
 	}	
 
 	function calculateStandLeveling( standQuantity ){
-		return {
+		var response = {
 			'basePrice'	: data['standsLeveling']['price'],
 			'quantity'	: standQuantity,
 			'price'		: data['standsLeveling']['price'] * standQuantity
 		};
+
+		isTestMode && console.log(
+			'stand leveling',
+			standQuantity,
+			response
+		);
+
+		return response;
 	}
 
 
 	function calculateHasStringers( stand, standQuantity ){
-		return standQuantity > 1 && stand != 'none';
+		var response = standQuantity > 1 && stand != 'none';
+
+		isTestMode && console.log(
+			'has stringers',
+			stand, standQuantity,
+			response
+		);
+
+		return response;
 	}
 
 
 	function calculateStringers( stand, length, standQuantity ){
 		var hasStringers = calculateHasStringers( stand, standQuantity );
+
+		var response = 0;
 
 		if( hasStringers ){
 			var stringers = data['stringers'];
@@ -1010,7 +1237,7 @@ $( document ).ready( function(  ){
 
 			for( i=0; i < stringers['conveyorLength'].length - 1 && length > stringers['conveyorLength'][i]; i++ );
 
-			return {
+			response = {
 				'basePrice'	: stringers['price'][i],
 				'mtgPrice'	: stringers['mtgAngles'],
 				'quantity'	: standQuantity,
@@ -1019,7 +1246,13 @@ $( document ).ready( function(  ){
 
 		}
 
-		return 0;
+		isTestMode && console.log(
+			'stringers',
+			stand, length, standQuantity,
+			response
+		);
+
+		return response;
 
 
 	}
@@ -1048,12 +1281,20 @@ $( document ).ready( function(  ){
 			total += controlPrice['control3'];
 
 
-		return {
+		var response = {
 			'control1': controlPrice['control1'],
 			'control2': controlPrice['control2'],
 			'control3': controlPrice['control3'],
 			'price': total
 		};
+
+		isTestMode && console.log(
+			'control',
+			control1, control2, control3,
+			response
+		);
+
+		return response;
 	}
 
 	function calculatePricing( basePrice ){
@@ -1072,14 +1313,22 @@ $( document ).ready( function(  ){
 
 		var price = yushinNet * n['yushinMarkup'];
 
-		return{
+		var response = {
 			'priceInc1': priceInc1,
 			'priceInc2': priceInc2,
 			'packagingPrice': packagingPrice,
 			'listPrice': listPrice,
 			'yushinNet': yushinNet,
 			'price': price
-		}
+		};
+
+		isTestMode && console.log(
+			'pricing',
+			basePrice,
+			response
+		);
+
+		return response;
 
 		
 	}
@@ -1962,8 +2211,8 @@ $( document ).ready( function(  ){
 	function fillDefault(  ){
 		if( confirm( 'Would you like to fill the fields with default values?' ) ){
 
-			// Defaults
-			$acceptTerms.prop( 'checked', true );
+					// Defaults
+					$acceptTerms.prop( 'checked', true );
 
 			$width.val( 7.87 );
 			$length.val( 120 );
@@ -1973,50 +2222,50 @@ $( document ).ready( function(  ){
 
 
 			$( '#conveyor-drive-head' ).click(  );
-			$driveVersion.val( 'standard' );
+					$driveVersion.val( 'standard' );
 			$driveLocation.val( 'left' );
 
-			$infeed.val( '1' );
+					$infeed.val( '1' );
 
 			$opsMode.val( 'continuous' );
 			$speedMode.val( 'variable' );
 			$speed.val( 60 );
 			$load.val( 20 );
 
-			$sideRail.val( 'none' );
+					$sideRail.val( 'none' );
 
 
-			$( '#conveyor-stand-none' ).click(  );
-			// $standHeight.val( 40 );
+					$( '#conveyor-stand-none' ).click(  );
+					// $standHeight.val( 40 );
 
-			$hasCasters.prop( 'checked', true );
+					$hasCasters.prop( 'checked', true );
 
-			$( $beltRows[1] ).addClass( 'selected' );
+					$( $beltRows[1] ).addClass( 'selected' );
 
-			$width.trigger( 'change' );
-			$length.trigger( 'change' );
-			$sideRail.trigger( 'change' );
-
-
-			// Contact
-			$contactPref.val( 'Ms.' );
-			$contactFirst.val( 'Candice' );
-			$contactLast.val( 'Canoso' );
-			$company.val( 'Freelancer.com' );
-			$address1.val( 'Cartagena Street' );
-			$address3.val( 'Las Pinas' );
-			$address4.val( 'Metro Manila' );
-			$address5.val( '1740' );
-			$phone.val( '111 111 1111' );
-			$email.val( 'mail@cndce.me' );
+					$width.trigger( 'change' );
+					$length.trigger( 'change' );
+					$sideRail.trigger( 'change' );
 
 
-			// Menu
-			$( '#sidebar li' ).addClass( 'visited finished' );
+					// Contact
+					$contactPref.val( 'Ms.' );
+					$contactFirst.val( 'Candice' );
+					$contactLast.val( 'Canoso' );
+					$company.val( 'Freelancer.com' );
+					$address1.val( 'Cartagena Street' );
+					$address3.val( 'Las Pinas' );
+					$address4.val( 'Metro Manila' );
+					$address5.val( '1740' );
+					$phone.val( '111 111 1111' );
+					$email.val( 'mail@cndce.me' );
 
 
-			updateBeltPrices(  );
-		}
+					// Menu
+					$( '#sidebar li' ).addClass( 'visited finished' );
+
+
+					updateBeltPrices(  );
+				}
 	}
 
 

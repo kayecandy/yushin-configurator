@@ -26,13 +26,66 @@
             if(!isset($request[$paramKey])){
                 header('HTTP/1.1 400 Bad Request');
                 header('Content-Type: application/json; charset=UTF-8');
-                die(json_encode(array('message' => 'Invalid parameters', 'code' => 400)));
+                // die(json_encode(array('message' => 'Invalid parameters', 'code' => 400)));
+                die(json_encode(array('message' => 'Missing parameter ' . $paramKey, 'code' => 400)));
             }
         }
 
     }
 
     // GET FUNCTIONS
+
+	function __get_belt_length_mm( $drive, $length ){
+		$lengthmm = round( $length * FT_TO_MM );
+
+		if( $drive == 'head' ){
+			return $lengthmm * 2 + 60;
+		}
+
+		return $lengthmm * 2 + 194;
+	}
+
+	function __get_belt_details( $beltNum ){
+		global $DATA;
+
+		$belt = $DATA['belt'];
+
+		// TODO: Reimplement and complete return
+		$iBelt = array_search($beltNum, $belt['beltNumber']);
+
+		return [
+			'beltNumber'		=> $beltNum,
+			'piw'				=> $belt['piw'][$iBelt]
+		];
+	}
+
+	function __get_belt_price( $drive, $piw, $width, $length ){
+		global $DATA;
+
+		$belt = $DATA['belt'];
+
+		$beltWidth = __get_belt_width_mm( $width ) / IN_TO_MM;
+		$beltLength = __get_belt_length_mm( $drive, $length ) / FT_TO_MM;
+
+
+		$listPrice = ( ( ( $beltLength + 9.5 ) * $beltWidth ) * $piw ) + $belt['splice'];
+
+		$cost = $listPrice * ( 1 - $belt['discount'] );
+
+
+		return $cost * $belt['markup'];
+
+	}
+
+	function __get_belt_width_mm( $width ){
+		$widthmm = round( $width * IN_TO_MM );
+
+		if( $widthmm > 600 )
+			return $widthmm - 15;
+
+		return $widthmm - 10;
+	}
+
     function __get_cpt( $label, $isCPT, $widthmm ){
 		if( $isCPT )
 			return $label;
@@ -155,6 +208,12 @@
 			'armatureFuse'	=> __get_part( $motor['armatureFuse'] )['price'] 
 		];
 
+		$motor['total'] = 0;
+
+		foreach ($motor['price'] as $motorPrice) {
+			$motor['total'] += $motorPrice;
+		}
+
 		return $motor;
 	}
 	function __get_motor_torque( $drumEfficiency, $motorEfficiency, $safetyFactor, $totalForce, $driveDrum ){
@@ -171,6 +230,13 @@
 		$torque *= $safetyFactor;
 
 		return $torque * 8.850748;
+	}
+
+	function __get_outfeed_version( $drive ){
+		if ($drive == 'center')
+			return 1;
+
+		return 0;
 	}
 
     function __get_part( $part ){
@@ -226,6 +292,10 @@
 		return $returnRange;
 	}
 
+	function __get_stand_has_extras( $standType ){
+		return $standType != 'none';
+	}
+
 	function __get_total_force( $beltWeight, $frictionFactor, $loadkg, $angle, $opsMode ){
 		$angleRad = $angle * DEG_TO_RAD;
 
@@ -253,6 +323,11 @@
 
 
 		return ( ( $lengthm * 2 ) + 0.14 ) * ( $widthmm/1000 ) * $beltWeight;
+	}
+
+	function __update_slider_deduct( $delta ){
+		if(isset($_POST['sliderDeduct']))
+			$_POST['sliderDeduct'] += $delta;
 	}
 
     // TEST FUNCTIONS
@@ -458,7 +533,7 @@
             'price'         => $prices[$i],
 			'total'			=> $number * $prices[$i]
         ];
-    }
+	}
 
 
     function calculate_drive_version(  ){
@@ -651,7 +726,15 @@
 		];
 	}
 
+	function calculate_drive_train(  ){
+        validate_isset(['speedMode']);
 
+		if( $_POST['speedMode'] == '' || $_POST['speedMode'] == 0 )
+			return 0;
+
+		return 60;
+		
+	}
 
 	function calculate_motors(  ){
         global $DATA;
@@ -717,6 +800,17 @@
 		];
 		
 
+	}
+
+	/**
+	 * TODO: Migrate entire belt process to PHP
+	 */
+	function calculate_belt(  ){
+		validate_isset(['belt', 'drive', 'width', 'length']);
+
+		$belt = __get_belt_details($_POST['belt']);
+
+		return __get_belt_price($_POST['drive'], $belt['piw'], $_POST['width'], $_POST['length']);
 	}
 
 	function calculate_side_rails(  ){
@@ -850,9 +944,9 @@
 
 		if($_POST['hasCasters'] && $_POST['standHasExtras'])
 			return [
-			'basePrice'	=> $DATA['standsCaster']['price'],
-			'quantity'	=> $_POST['standQuantity'],
-			'price'		=> $DATA['standsCaster']['price'] * $_POST['standQuantity']
+				'basePrice'	=> $DATA['standsCaster']['price'],
+				'quantity'	=> $_POST['standQuantity'],
+				'price'		=> $DATA['standsCaster']['price'] * $_POST['standQuantity']
 			];
 
 		return [
@@ -869,9 +963,9 @@
 
 		if($_POST['hasLeveling'] && $_POST['standHasExtras'])
 			return [
-			'basePrice'	=> $DATA['standsLeveling']['price'],
-			'quantity'	=> $_POST['standQuantity'],
-			'price'		=> $DATA['standsLeveling']['price'] * $_POST['standQuantity']
+				'basePrice'	=> $DATA['standsLeveling']['price'],
+				'quantity'	=> $_POST['standQuantity'],
+				'price'		=> $DATA['standsLeveling']['price'] * $_POST['standQuantity']
 			];
 
 		return [
@@ -988,15 +1082,101 @@
 		
 	}
 
-		
+	function calculate_base_price( $prices ){
+		$basePrice = 0;
+
+		$basePrice += $prices['frame_price'];
+		$basePrice += $prices['support_rolls']['total'];
+		$basePrice += $prices['motors']['total'];
+
+		// Drive
+		$basePrice += $prices['drive_version']['price']['drive'];
+		$basePrice += $prices['drive_version']['price']['driveWidthVars'];
+		$basePrice += $prices['drive_drum']['price'];
+
+		// Infeed/Outfeed
+		$basePrice += $prices['infeed_tail']['price'];
+		$basePrice += $prices['infeed_width_vars']['price'];
+		$basePrice += $prices['outfeed_tail']['price'];
+		$basePrice += $prices['outfeed_tail_vars']['price'];
+		$basePrice += $prices['drive_train'];
+
+		// Belt
+		$basePrice += $prices['belt'];
+
+		// Side Rails
+		$basePrice += $prices['side_rails']['price'];
+
+		// Stands
+		$basePrice += $prices['stands']['price'];
+		$basePrice += $prices['stands_leveling']['price'];
+		$basePrice += $prices['stands_caster']['price'];
+		$basePrice += $prices['stringers']['price'];
+
+
+
+		return $basePrice;
+	}
+
+	function calculate(  ){
+		// Derived parameters
+		$_POST['widthmm'] = $_POST['width'] * IN_TO_MM;
+		$_POST['lengthmm'] = $_POST['length'] * FT_TO_MM;
+		$_POST['outfeedVersion'] = __get_outfeed_version( $_POST['drive'] );
+		$_POST['standHasExtras'] = __get_stand_has_extras( $_POST['standType'] );
+		$_POST['sliderDeduct'] = 0;
+
+		$motor = calculate_motors();
+		$_POST['adapterPlate'] = $motor['adapterPlateOur'];
+		$_POST['motorManufacturer'] = $motor['modelManufacturer'];
+
+		$prices = [
+			'frame_price'			=> calculate_frame_price(),
+			'support_rolls'			=> calculate_support_rolls_price(),
+			'motors'				=> $motor,
+			'drive_version'			=> calculate_drive_version(),
+			'drive_drum'			=> calculate_drive_drum(),
+			'drive_drum_surface'	=> calculate_drive_drum_surface(),
+			'infeed_tail'			=> calculate_infeed_tail(),
+			'infeed_width_vars'		=> calculate_infeed_width_vars(),
+			'outfeed_tail'			=> calculate_outfeed_tail(),
+			'outfeed_tail_vars'		=> calculate_outfeed_width_vars(),
+			'drive_train'			=> calculate_drive_train(),
+			'belt'					=> calculate_belt(),
+			'side_rails'			=> calculate_side_rails(),
+			'stands'				=> calculate_stands(),
+			'stands_leveling'		=> calculate_stand_leveling(),
+			'stands_caster'			=> calculate_stands_caster(),
+			'stringers'				=> calculate_stringers(),
+			
+		];
+
+		$basePrice = calculate_base_price($prices);
+		$pricing = calculate_pricing($basePrice);
+		$controls = calculate_control();
+		$total = $pricing['price'] + $controls['price'];
+
+
+		return [
+			'parts'			=> $prices,
+			'base_price'	=> $basePrice,
+			'pricing'		=> $pricing,
+			'controls'		=> $controls,
+			'total'			=> $total
+		];
+
 	}
 
 
     if(!empty($_POST['action'])){
-        call_user_func($_POST['action']);
+		die(json_encode(
+			call_user_func($_POST['action'])
+		));
 
     }else{
-        echo 'no action parameter';
+        die(json_encode(
+			calculate()
+		));
     }
 
 

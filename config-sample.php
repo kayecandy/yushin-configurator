@@ -5,6 +5,8 @@
 define( 'URL_API', './test.php' );
 define( 'URL_DATA', './data.json' );
 define( 'URL_MAIL', './mail.php' );
+define( 'URL_TEST_DEFAULT', './tests/default.json' );
+define( 'URL_CALCULATE', './calculate.php' );
 
 // define( 'MAIL_FROM', 'salesinfo@yushin.com' );
 define( 'MAIL_FROM', 'mail@cndce.me' );

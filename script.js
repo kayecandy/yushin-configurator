@@ -1042,7 +1042,7 @@ $( document ).ready( function(  ){
 
 	}
 
-	function calculateSideRails( sideRail, length, railSystem, railHeight, hasUHMW, width ){
+	function calculateSideRails( sideRail, length, railSystem, railHeight, hasUHMW, width, sliderDeduct ){
 
 		var sideRails = data['sideRails'][sideRail];
 		var i, j;
@@ -1066,7 +1066,7 @@ $( document ).ready( function(  ){
 			if( railSystem == 'sf13' ){
 				price = lengthmm / 1000 * 30
 
-				oal = lengthmm - $length.data( 'slider-deduct' );
+				oal = lengthmm - sliderDeduct;
 				laneWidth -= 2;
 
 			// SF7.1
@@ -1352,10 +1352,9 @@ $( document ).ready( function(  ){
 		} );
 	}
 
-	function updateFramePrice(  ){
-		var total = calculateFramePrice( $width.val(  ), $length.data( 'ft-val' ), $slider.val(  ) );
+	function updateFramePrice( framePrice ){
 
-		$( '#pricing-step .frame-price' ).text( priceFormat( total ) );
+		$( '#pricing-step .frame-price' ).text( priceFormat( framePrice ) );
 		$( '#pricing-step .frame-width' ).text( $width.val(  ) + '"' );
 		$( '#pricing-step .frame-length' ).text( $length.data( 'ft-val' ).toFixed( 2 ) + '\'' );
 
@@ -1372,47 +1371,28 @@ $( document ).ready( function(  ){
 			$( '#pricing-step .incline-label' ).text( 'Conveyor will be running at an angle of ' + $angle.val(  ) + ' degrees' );
 		}
 
-
-
-		return total;
 	}
 
 
-	function updateSupportRolls(  ){
-		var supportRolls = calculateSupportRollsPrice( $drive.filter( ':checked' ).val(  ), $width.val(  ), $length.data( 'ft-val' ), $speed.val(  ) );
-
-		var total = supportRolls['number'] * supportRolls['price'];
+	function updateSupportRolls( supportRolls ){
 
 		$( '#pricing-step .support-roll-number' ).text( supportRolls['number'] );	
 		$( '#pricing-step .support-roll-price' ).text( priceFormat( supportRolls['price'] ) );	
-		$( '#pricing-step .support-roll-total-price' ).text( priceFormat( total ) );	
+		$( '#pricing-step .support-roll-total-price' ).text( priceFormat( supportRolls['total'] ) );	
 
 		// Table
 		$( '#pricing-step .support-rolls-number' ).text( supportRolls['number'] );
 
-		return total;
 	}
 
 
-	function updateDrive(  ){
-		var total = 0;
-
-		var adapterPlate = $( '#pricing-step .motor-adapter-plate' ).text(  );
-		var manufacturer = $( '#pricing-step .motor-manufacturer' ).text(  );
-
-		var widthmm = Math.round( $width.val(  ) * IN_TO_MM );
-
+	function updateDrive( driveVersion, driveDrum, driveDrumSurface ){
 		// Drive Version
-		var driveVersion = calculateDriveVersion( $drive.filter( ':checked' ).val(  ), $( ':selected', $driveVersion ).data( 'version' ), $driveLocation.val(  ), $voltage.val(  ), widthmm, adapterPlate, manufacturer );
-
-
 		$( '#pricing-step .drive-version' ).text( $( ':selected', $driveVersion ).data( 'label' ) );
 		$( '#pricing-step .drive-location' ).text( $( ':selected', $driveLocation ).text(  ) );
 		$( '#pricing-step .drive-part-num' ).text( driveVersion['labelBOM'] );
 
 		$( '#pricing-step .drive-version-total-price' ).text( priceFormat( driveVersion['price']['drive'] ) );
-		total += driveVersion['price']['drive'];
-
 
 
 		// // Drive Width Vars
@@ -1420,8 +1400,6 @@ $( document ).ready( function(  ){
 
 			$( '#pricing-step .drive-width-vars-part' ).text( driveVersion['labelWidthVars'] );
 			$( '#pricing-step .drive-width-vars-total-price' ).text( priceFormat( driveVersion['price']['driveWidthVars'] ) );
-
-			total += driveVersion['price']['driveWidthVars'];
 
 			$( '#pricing-step .drive-width-vars' ).removeClass( 'd-none' );
 
@@ -1436,15 +1414,10 @@ $( document ).ready( function(  ){
 
 
 		// // Drive Drum
-		var driveDrum = calculateDriveDrum( $drive.filter( ':checked' ).val(  ), $( ':selected', $driveVersion ).data( 'version' ), widthmm, $load.val(  ), $speed.val(  ) );
-
-
 		if( driveDrum['price'] != 0 ){
 
 			$( '#pricing-step .drive-drum-part' ).text( driveDrum['labelBOM'] );
 			$( '#pricing-step .drive-drum-total-price' ).text( priceFormat( driveDrum['price'] ) );
-
-			total += driveDrum['price'];
 
 			$( '#pricing-step .drive-drum-container' ).removeClass( 'd-none' );
 		}else{
@@ -1455,75 +1428,46 @@ $( document ).ready( function(  ){
 		}
 
 
-		// Slider Deduct
-		updateSliderDeduct( driveVersion['sliderDeduct'] );
-		
-
-
 
 		// // Table
 		$( '#pricing-step .drive-version-code' ).text( $driveVersion.find( ':selected' ).data( 'code' ) );
 		$( '#pricing-step .drive-type-label' ).text( $drive.filter( ':checked' ).data( 'label' ) );
 		$( '#pricing-step .drive-version-label' ).text( $driveVersion.find( ':selected' ).data( 'label' ) );
 		$( '#pricing-step .drive-location-label' ).text( $driveLocation.find( ':selected' ).data( 'label' ) );
-		$( '#pricing-step .drive-drum-surface-label' ).text( calculateDriveDrumSurface( $drive.filter( ':checked' ).val(  ), $load.val(  ), $speed.val(  ) ) );
-
-
-		return total;
+		$( '#pricing-step .drive-drum-surface-label' ).text( driveDrumSurface );
 		
 	}
 
-	function updateInfeedOutfeed(  ){
+	function updateInfeedOutfeed( infeedTail, infeedWidthVars, outfeedTail, outfeedWidthVars, driveTrainPrice ){
 		var n = data['calculations']['BOM'];
 
-		var widthmm = Math.round( $width.val(  ) * IN_TO_MM );
-		var lengthmm = Math.round( $length.data( 'ft-val' ) * FT_TO_MM );
-
+		/**
+		 * TODO: Move to backend when PDF generation is migrated as well
+		 */
 		var versionInfeed = n['infeedVersion'];
 		var versionOutfeed = getOutfeedVersion( $drive.filter( ':checked' ).val(  ) );
 
 		// Infeed Tail
-		var infeedTail = calculateInfeedTail( widthmm, lengthmm, versionInfeed );
-
-		total = 0;
-
 		$( '#pricing-step .infeed-tail-part' ).text( infeedTail['labelBOM'] );
 		$( '#pricing-step .infeed-tail-total-price' ).text( priceFormat( infeedTail['price'] ) );
-		total += infeedTail['price'];
 
 
 		// Infeed Tail Width Vars
-		var infeedWidthVars = calculateInfeedWidthVars( widthmm, versionInfeed );
 		$( '#pricing-step .infeed-width-vars-part' ).text( infeedWidthVars['labelBOM'] );
 		$( '#pricing-step .infeed-width-vars-total-price' ).text( priceFormat( infeedWidthVars['price'] ) );
 
-		total += infeedWidthVars['price'];
 
-
-		// Slider Deduct
-		updateSliderDeduct( infeedTail['sliderDeduct'] );
-
-
-		var outfeedTail = calculateOutfeedTail( widthmm, lengthmm, versionOutfeed );
 
 		if( outfeedTail['price'] != 0 ){
 
 			$( '#pricing-step .outfeed-tail-part' ).text( outfeedTail['labelBOM'] );
 			$( '#pricing-step .outfeed-tail-total-price' ).text( priceFormat( outfeedTail['price'] ) );
 
-			total += outfeedTail['price'];
 
 
 			// Outfeed Tail Width Vars
-			var outfeedWidthVars = calculateOutfeedWidthVars( widthmm, versionOutfeed );
 			$( '#pricing-step .outfeed-width-vars-part' ).text( outfeedWidthVars['labelBOM'] );
 			$( '#pricing-step .outfeed-width-vars-total-price' ).text( priceFormat( outfeedWidthVars['price'] ) );
-
-			total += outfeedWidthVars['price'];
-
-
-			// Slider Deduct
-			updateSliderDeduct( outfeedTail['sliderDeduct'] );
 
 
 
@@ -1540,10 +1484,8 @@ $( document ).ready( function(  ){
 		}
 
 		// Drive Train
-		var driveTrainPrice = getDriveTrainPrice( $speedMode.val(  ) );
 		$( '#pricing-step .drive-train-price' ).text( priceFormat( driveTrainPrice ) );
 
-		total += driveTrainPrice;
 
 
 		// Table
@@ -1557,21 +1499,9 @@ $( document ).ready( function(  ){
 			$( '#pricing-step .discharge-tail-label' ).text( versionOutfeed );
 
 
-
-		return total;
-	
 	}
 
-	function updateMotors( 	 ){
-		var motors = calculateMotors( $drive.filter( ':checked' ).val(  ), $voltage.val(  ), $opsMode.val(  ), $speedMode.val(  ), $speed.val(  ), $load.val(  ), $width.val(  ), $length.data( 'ft-val' ), $angle.val(  ) );
-
-		var prices = Object.getOwnPropertyNames( motors['price'] );
-		var total = 0;
-
-		for( var i=0; i < prices.length; i++ ){
-			total += motors['price'][prices[i]];
-		}
-
+	function updateMotors( motors ){
 
 		// Input
 		$( '#pricing-step .motor-load' ).text( $load.val(  ) + ' lbs' );
@@ -1710,16 +1640,13 @@ $( document ).ready( function(  ){
 		$( '#pricing-step .motor-cord-control' ).text( motorCordControl );
 
 		
-
-
-		return total;
-
 	}
 
+	/**
+	 * TODO: Move to backend
+	 */
 	function updateBelt(  ){
 		var $selected = $( '#belt-step .belt-row.selected' );
-		var total = 0;
-
 
 		if( $selected.length > 0 ){
 
@@ -1732,7 +1659,6 @@ $( document ).ready( function(  ){
 
 
 			$( '#pricing-step .no-belt-selected' ).addClass( 'd-none' );
-			total += parseFloat( $selected.data( 'price' ) );
 		}else{
 			$( '#pricing-step .belt-values' ).text( '' );
 			$( '#pricing-step .belt-total-price' ).text( priceFormat( 0 ) );
@@ -1742,9 +1668,11 @@ $( document ).ready( function(  ){
 
 
 		// Table
-		// console.log( $selected );
 		if( $selected.length > 0 ){
 
+			/**
+			 * TODO: Move to backend
+			 */
 			var beltWidthmm = getBeltWidthMm( $width.val(  ) );
 			var beltLengthmm = getBeltLengthMm( $drive.filter( ':checked' ).val(  ), $length.data('ft-val') );
 
@@ -1771,29 +1699,21 @@ $( document ).ready( function(  ){
 
 		$( '#pricing-step .slider-label' ).text( $( ':selected', $slider ).text(  ) );
 
-
-
-		return total;
 	}
 
-	function updateSideRails(  ){
-
-		var total = 0;
-
-		var sideRails = calculateSideRails( $sideRail.val(  ), $length.data( 'ft-val' ), $sideRailSystem.filter( ':checked' ).val(  ), $sideRailHeight.val(  ), $sideRailUHMW.prop( 'checked' ), $width.val(  ) );
+	function updateSideRails( sideRails ){
 
 		if( $sideRail.val(  ) != 'none' ){
 
 			$( '#pricing-step .side-rails-note' ).text( sideRails['name'] );
 			$( '#pricing-step .side-rails-total-price' ).text( priceFormat( sideRails['price'] ) );
-			total += sideRails['price'];
 		}else{
 			$( '#pricing-step .side-rails-note' ).text( 'No Rails' );
 			$( '#pricing-step .side-rails-total-price' ).text( priceFormat( 0 ) );
 		}
 
 		// Table
-		if( total != 0 ){
+		if( sideRails['price'] != 0 ){
 			$( '#pricing-step .rail-system' ).text( sideRails['name'] );
 			$( '#pricing-step .side-rail-oal' ).text( sideRails['OALmm'] );
 
@@ -1813,15 +1733,9 @@ $( document ).ready( function(  ){
 			$( '#pricing-step .side-rail-desc-2' ).addClass( 'd-none' );
 		}
 
-
-		return total;
 	}
 
-	function updateStands(  ){
-		var standType = $standType.filter( ':checked' ).val(  );
-		var stands = calculateStands( standType, $standHeight.val(  ), $standQuantity.val(  ), $width.val(  ), $length.data( 'ft-val' ) );
-
-		var total = stands['price'];
+	function updateStands( stands, levelingPrice, casterPrice, stringerPrice ){
 
 		$( '#pricing-step .stand-type' ).text( stands['name'] );
 		$( '#pricing-step .stand-height' ).text( $standHeight.val(  ) + "\"" );
@@ -1830,83 +1744,46 @@ $( document ).ready( function(  ){
 		$( '#pricing-step .stand-total-price' ).text( priceFormat( stands['price'] ) );
 
 
-		// Extras
-		var hasExtras = standType != 'none';
-
 		// Leveling
-		if( $hasLeveling.prop( 'checked' ) && hasExtras ){
-			var levelingPrice = calculateStandLeveling( $standQuantity.val(  ) );
-
 			$( '#pricing-step .stand-leveling-price' ).text( priceFormat( levelingPrice['basePrice'] ) );
 
 
 			$( '#pricing-step .stand-leveling-quantity' ).text( levelingPrice['quantity'] );
 			$( '#pricing-step .stand-leveling-total-price' ).text( priceFormat( levelingPrice['price'] ) );
 
-
+		if( levelingPrice['price'] ){
 			$( '#pricing-step .leveling' ).removeClass( 'd-none' );
 
-			total += levelingPrice['price'];
 		}else{
-			$( '#pricing-step .stand-leveling-total-price' ).text( priceFormat( 0 ) );
-			$( '#pricing-step .stand-leveling-quantity' ).text( 0 );
-
 			$( '#pricing-step .leveling' ).addClass( 'd-none' );
-
 		}
 
 
 		// Casters
-		if( $hasCasters.prop( 'checked' ) && hasExtras ){
-			var casterPrice = calculateStandsCaster( $standQuantity.val(  ) );
-
 			$( '#pricing-step .stand-caster-price' ).text( priceFormat( casterPrice['basePrice'] ) );
-
 
 			$( '#pricing-step .stand-caster-quantity' ).text( casterPrice['quantity'] );
 			$( '#pricing-step .stand-caster-total-price' ).text( priceFormat( casterPrice['price'] ) );
 
+		if( casterPrice['price'] ){
 			$( '#pricing-step .casters' ).removeClass( 'd-none' );
 
-			total += casterPrice['price'];
 		}else{
-			$( '#pricing-step .stand-caster-total-price' ).text( priceFormat( 0 ) );
-			$( '#pricing-step .stand-caster-quantity' ).text( 0 );
-
 			$( '#pricing-step .casters' ).addClass( 'd-none' );
 
 		}
 
 
-
-
-
-
 		// Stringers
-		var stringerPrice = calculateStringers( $standType.filter( ':checked' ).val(  ), $length.data( 'ft-val' ), $standQuantity.val(  ) );
-
-
-
-		if( stringerPrice != 0 && stringerPrice['price'] != 0 ){
 			$( '#pricing-step .stand-stringers-price' ).text( priceFormat( stringerPrice['basePrice'] ) );
-
 
 			$( '#pricing-step .stand-stringers-mtg-price' ).text( priceFormat( stringerPrice['mtgPrice'] ) );
 			$( '#pricing-step .stand-stringers-total-price' ).text( priceFormat( stringerPrice['price'] ) );
 
-			total += stringerPrice['price'];
 
-
-
+		if( stringerPrice['price'] ){
 			$( '#pricing-step .pdf-container.stringers' ).removeClass( 'd-none' );
 		}else{
-			$( '#pricing-step .stand-stringers-price' ).text( priceFormat( 0 ) );
-
-
-			$( '#pricing-step .stand-stringers-mtg-price' ).text( priceFormat( 0 ) );
-			$( '#pricing-step .stand-stringers-total-price' ).text( priceFormat( 0 ) );
-
-
 			$( '#pricing-step .pdf-container.stringers' ).addClass( 'd-none' );
 		}
 
@@ -1920,17 +1797,19 @@ $( document ).ready( function(  ){
 
 			$( '#pricing-step .stand-height-label' ).text( 'System: 55.1, height H=' + standHeightmm + ' mm' );
 
-			// Extras
-			if( $hasLeveling.prop( 'checked' ) && hasExtras ){
+			// Leveling
+			if( levelingPrice['price'] ){
 				$( '#pricing-step .stand-extras-desc' ).text( 'Includes Leveling Pads and Floor Mounting Brackets' );			
-			}else if( $hasCasters.prop( 'checked' ) && hasExtras ){
+
+			// Casters
+			}else if( casterPrice['price'] ){
 				$( '#pricing-step .stand-extras-desc' ).text( 'With Swivel-Lock Casters' );			
 			}else{
 				$( '#pricing-step .stand-extras-desc' ).text( 'With Leveling Pads' );			
 			}
 
 			// Stringers
-			if( stringerPrice != 0 && stringerPrice['price'] != 0 ){
+			if( stringerPrice['price'] ){
 				$( '#pricing-step .stand-stringers-desc' ).text( 'Includes stringer to tie stands together.' );
 			}else{
 				$( '#pricing-step .stand-stringers-desc' ).text( '' );
@@ -1943,20 +1822,12 @@ $( document ).ready( function(  ){
 			$( '#pricing-step .stand-extras-desc' ).text( '' )			
 			$( '#pricing-step .stand-stringers-desc' ).text( '' );
 
-
-
 		}
-
-
-
-
-		return total;
-
 
 	}
 
-	function updateControls(  ){
-		var prices = calculateControl( $control1.prop( 'checked' ), $control2.prop( 'checked' ), $control3.prop( 'checked' ) )
+	function updateControls( prices ){
+		// var prices = calculateControl( $control1.prop( 'checked' ), $control2.prop( 'checked' ), $control3.prop( 'checked' ) )
 
 		var controlCount = 0
 
@@ -2004,15 +1875,18 @@ $( document ).ready( function(  ){
 
 
 		// Table
+		controlCount = 0;
+
 		if( $control1.prop( 'checked' ) ){
 			$( '#pricing-step .control-1' ).removeClass( 'd-none' );
 			$( '#pricing-step .none-1' ).addClass( 'd-none' );
+			controlCount++;
+			
 		}else{
 			$( '#pricing-step .control-1' ).addClass( 'd-none' );
 			$( '#pricing-step .none-1' ).removeClass( 'd-none' );
 		}
 
-		controlCount = 0;
 		if( $control2.prop( 'checked' ) ){
 			$( '#pricing-step .control-2' ).removeClass( 'd-none' );
 			controlCount++;
@@ -2034,9 +1908,11 @@ $( document ).ready( function(  ){
 
 		}
 		
-		return prices['price'];
 	}
 
+	/**
+	 * TODO: Move to backend
+	 */
 	function updateAccessories(  ){
 		var $template = $( '#pricing-step .accessories .template' );
 		var total = 0;
@@ -2084,8 +1960,8 @@ $( document ).ready( function(  ){
 	}
 
 
-	function updatePricing( basePrice ){
-		var prices = calculatePricing( basePrice );
+	function updatePricing( basePrice, prices ){
+		// var prices = calculatePricing( basePrice );
 		var n = data['calculations']['pricing'];
 
 		$( '#pricing-step .base-price' ).text( priceFormat( Math.round( basePrice ) ) );
@@ -2112,14 +1988,6 @@ $( document ).ready( function(  ){
 
 		$( '#pricing-step .price-total' ).text( priceFormat( prices['price'] ) );
 
-
-
-
-
-
-
-
-		return prices['price'];
 	}
 
 	function updateCustomerInformation(  ){
@@ -2151,7 +2019,8 @@ $( document ).ready( function(  ){
 			return false;
 		}
 
-		var motors = updateMotors(  );
+		var motors = await getMotor();
+
 
 
 		if( motors == 0 ){
@@ -2173,10 +2042,8 @@ $( document ).ready( function(  ){
 
 	}
 
-	window.gotoStep = gotoStep;
 
-
-	function submitForm(  ){
+	function __deprecatedSubmitForm(  ){
 
 
 		var total = 0;
@@ -2239,6 +2106,89 @@ $( document ).ready( function(  ){
 
 		});
 	}
+
+	function submitForm(  ){
+		
+		$.ajax({
+			url: URL_CALCULATE,
+			method: 'POST',
+			dataType: 'json',
+			data: {
+				'width'					: $width.val(  ),
+				'length'				: $length.data( 'ft-val' ),
+				'slider'				: $slider.val(  ),
+				'drive'					: $drive.filter( ':checked' ).val(  ),
+				'speed'					: $speed.val(  ),
+				'voltage'				: $voltage.val(  ),
+				'opsMode'				: $opsMode.val(  ),
+				'speedMode'				: $speedMode.val(  ),
+				'load'					: $load.val(  ),
+				'angle'					: $angle.val(  ),
+				'driveVersion'			: $( ':selected', $driveVersion ).data( 'version' ),
+				'driveLocation'			: $driveLocation.val(  ),
+
+				'belt'					: $( '#belt-step .belt-row.selected' ).attr('data-belt-num'),
+
+
+				'sideRail'				: $sideRail.val(  ),
+				'railSystem'			: $sideRailSystem.filter( ':checked' ).val(  ),
+				'railHeight'			: $sideRailHeight.val(  ),
+				'hasUHMW'				: $sideRailUHMW.prop( 'checked' ),
+				'standType'				: $standType.filter( ':checked' ).val(  ),
+
+				'standHeight'			: $standHeight.val(  ),
+				'standQuantity'			: $standQuantity.val(  ),
+				'hasLeveling'			: $hasLeveling.prop( 'checked' ) ? 1 : 0,
+				'hasCasters'			: $hasCasters.prop( 'checked' ) ? 1 : 0,
+
+
+				'control1'				: $control1.prop( 'checked' ) ? 1 : 0,
+				'control2'				: $control2.prop( 'checked' ) ? 1 : 0,
+				'control3'				: $control3.prop( 'checked' ) ? 1 : 0,
+
+			},
+			success: function( json ){
+				var parts = json['parts'];
+
+				console.log(json, parts);
+
+
+				updateFramePrice( parts['frame_price'] );
+		
+				updateSupportRolls( parts['support_rolls'] );
+
+				updateMotors( parts['motors'] );
+				
+				updateDrive( parts['drive_version'], parts['drive_drum'], parts['drive_drum_surface'] );
+				
+				updateInfeedOutfeed( parts['infeed_tail'], parts['infeed_width_vars'], parts['outfeed_tail'], parts['outfeed_tail_vars'], parts['drive_train'] );
+						
+				updateBelt(  );
+				
+				updateSideRails( parts['side_rails'] );
+				
+				updateStands( parts['stands'], parts['stands_leveling'], parts['stands_caster'], parts['stringers'] );
+
+				// NOT AVAILABLE FOR YUSHIN
+				// TODO: Migrate to backend
+				// updateAccessories(  );
+
+				updatePricing( json['base_price'], json['pricing'] );
+
+				updateControls( json['controls'] );
+
+				updateCustomerInformation(  );
+
+				$( '#pricing-step .total-price' ).text( priceFormat( json['total'] ) );
+			},
+			error: function( json ){
+				alert('Woops! There was an error in your request. Please try again or contact our sales team.');
+
+				throw json;
+			}
+		});
+	}
+
 	function fillDefault(  ){
 		if( confirm( 'Would you like to fill the fields with default values?' ) ){
 

@@ -44,6 +44,7 @@
 		var URL_API = '<?php echo URL_API; ?>';
 		var URL_DATA = '<?php echo URL_DATA; ?>';
 		var URL_MAIL = '<?php echo URL_MAIL; ?>';
+		var URL_CALCULATE = '<?php echo URL_CALCULATE ?>';
 
 		
 

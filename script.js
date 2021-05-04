@@ -141,12 +141,16 @@ $( document ).ready( function(  ){
 		var $selectedMenu = $( $( '#sidebar li' )[index] );
 		var $selectedStep = $( $( '#steps-container .step' )[index] );
 
+		(async function(){
 
 		if( $selectedStep.is( '#pricing-step' ) ){
-			if( !validateAllForms(  ) )
+				const isValid = await validateAllForms(  );
+
+				if( !isValid )
 				return;
 
 			submitForm(  );
+				
 		}
 
 		$activeMenu.removeClass('active');
@@ -156,6 +160,7 @@ $( document ).ready( function(  ){
 		$selectedMenu.addClass('active visited');
 		$selectedStep.addClass('active visited');
 
+		})();
 		
 		
 	}
@@ -2126,7 +2131,7 @@ $( document ).ready( function(  ){
 	}
 
 
-	function validateAllForms(  ){
+	async function validateAllForms(  ){
 		var isValid = true;
 
 		$( '.step-form' ).each( function(  ){
@@ -2208,6 +2213,32 @@ $( document ).ready( function(  ){
 		$( '#pricing-step .total-price' ).text( priceFormat( total ) );
 	}
 
+	function getMotor(){
+		return new Promise(function(resolve, reject){
+			$.ajax({
+				url: URL_CALCULATE,
+				method: 'POST',
+				dataType: 'json',
+				data: {
+					'action'		: 'calculate_motors',
+					'drive'			: $width.val(  ),
+					'voltage'		: $voltage.val(  ),
+					'opsMode'		: $opsMode.val(  ),
+					'speedMode'		: $speedMode.val(  ),
+					'speed'			: $speed.val(  ),
+					'load'			: $load.val(  ),
+					'width'			: $width.val(  ),
+					'length'		: $length.data( 'ft-val' ),
+					'angle'			: $angle.val(  )
+				},
+				success: resolve,
+				error: function(test){
+					alert('Woops! There was an error in your request. Please try again or contact our sales team.');
+				}
+			})
+
+		});
+	}
 	function fillDefault(  ){
 		if( confirm( 'Would you like to fill the fields with default values?' ) ){
 

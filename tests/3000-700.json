@@ -1,10 +1,10 @@
 {
-    "width": 7.87,
+    "width": 27.56,
     "length": 3000,
     "lengthUnit": "mm",
     "slider": "galvanized",
     "angle": 0,
-    "load": 41,
+    "load": 60,
     "accumulation": "continuous",
 
     "drive": "head",
@@ -21,6 +21,8 @@
     "standsHeight": "48",
     "standsQuantity": 3,
 
-    "hasCasters": true
+    "hasCasters": true,
+
+    "control1": true
 
 }

@@ -2242,14 +2242,14 @@ $( document ).ready( function(  ){
 					$standHeight.val( json.standsHeight );
 					$standQuantity.val( json.standsQuantity );
 
-					if( json.hasCasters )
-						$hasCasters.prop( 'checked', true );
-					else if( json.hasBrackets )
-						$hasLeveling.prop( 'checked', true );
+					$hasCasters.prop( 'checked', json.hasCasters );
+					$hasLeveling.prop( 'checked', json.hasBrackets );
 
 
-
-
+					// Controls
+					$control1.prop( 'checked', json.control1 );
+					$control2.prop( 'checked', json.control2 );
+					$control3.prop( 'checked', json.control3 );
 					
 
 					$width.trigger( 'change' );

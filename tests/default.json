@@ -4,7 +4,7 @@
     "lengthUnit": "mm",
     "slider": "galvanized",
     "angle": 0,
-    "load": 41,
+    "load": 40,
     "accumulation": "continuous",
 
     "drive": "head",

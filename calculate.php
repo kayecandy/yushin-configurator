@@ -410,9 +410,9 @@
         for($j; $j < sizeof($frame['conveyorLength']) - 1 
             && $_POST['length'] > $frame['conveyorLength'][$j]; $j++);
 
-        die(json_encode($frame['values'][$_POST['slider']][
+		return $frame['values'][$_POST['slider']][
             $j * sizeof($frame['conveyorWidth']) + $i
-        ]));
+        ];
 
     }
 
@@ -453,10 +453,11 @@
         //Price
         for( $i; $i < sizeof($supportRolls['conveyorWidth']) - 1 && $_POST['width'] > $supportRolls['conveyorWidth'][$i]; $i++);
 
-        die(json_encode([
+		return [
             'number'        => $number,
-            'price'         => $prices[$i]
-        ]));
+            'price'         => $prices[$i],
+			'total'			=> $number * $prices[$i]
+        ];
     }
 
 
@@ -484,16 +485,19 @@
 
 				$driveObj['labelWidthVars'] = __get_cpt( $driveObj['widthVars'], $driveObj['cptWidthVars'], $_POST['widthmm'] );
 
-				die(json_encode(__get_drive_price( $driveObj )));
+				$driveVersion = __get_drive_price( $driveObj );
+				__update_slider_deduct( $driveVersion['sliderDeduct'] );
+
+				return $driveVersion;
 			}
 		}
 
-		die(json_encode([
+		return [
 			'price'             => [
 				'drive'         => 0,
 				'widthVars'     => 0
             ]
-		]));
+		];
 
 	}
 
@@ -517,14 +521,14 @@
 
 				$driveDrum['labelBOM'] = __get_cpt( $driveDrum['BOM'], $driveDrum['cptBOM'], $_POST['widthmm'] );
 
-				die(json_encode(__get_drive_drum_price( $driveDrum )));
+				return __get_drive_drum_price( $driveDrum );
 
 			}
 		}
 
-		die(json_encode([
+		return [
 			'price' => 0
-		]));
+		];
 	}
 
     function calculate_drive_drum_surface(  ){
@@ -538,103 +542,113 @@
 		if( ( $_POST['drive'] == 'head' && $loadKg > 75 )
 			|| ( $_POST['drive'] == 'center' && $loadKg > 30 ) 
 			|| ( $_POST['speed'] > 80 ) )
-			die(json_encode($rubber));
+			return $rubber;
 
-		die(json_encode($steel));
+		return $steel;
 	}
 
     function calculate_infeed_tail(  ){
         global $DATA;
 
-        validate_isset(['widthmm', 'lengthmm', 'version']);
+        validate_isset(['widthmm', 'lengthmm']);
 
+		$infeedVersion = $DATA['calculations']['BOM']['infeedVersion'];
 		$infeedTails = $DATA['infeedTail'];
 
 		for( $i=0; $i < sizeof($infeedTails['BOM']); $i++ ){
 			$infeedTail = __get_properties( $infeedTails, $i );
 
-			if( __test_infeed_tail( $infeedTail, $_POST['widthmm'], $_POST['lengthmm'], $_POST['version'] ) ){
+			if( __test_infeed_tail( $infeedTail, $_POST['widthmm'], $_POST['lengthmm'], $infeedVersion ) ){
 				$infeedTail['labelBOM'] = __get_cpt( $infeedTail['BOM'], $infeedTail['cptBOM'], $_POST['widthmm'] );
 
-				die(json_encode(__get_infeed_tail_price( $infeedTail )));
+
+				$infeedTail = __get_infeed_tail_price( $infeedTail );
+				__update_slider_deduct( $infeedTail['sliderDeduct'] );
+
+				return $infeedTail;
+
 			}
 
 		}
 
 
-		die(json_encode([
+		return [
 			'labelBOM'  => 'No Infeed Tail',
 			'price'     => 0
-		]));
+		];
 	}
 
     function calculate_infeed_width_vars(  ){
         global $DATA;
 
-        validate_isset(['widthmm', 'version']);
+        validate_isset(['widthmm']);
 
+		$infeedVersion = $DATA['calculations']['BOM']['infeedVersion'];
 		$infeedWidthVars = $DATA['infeedWidthVars'];
 		
 		for( $i=0; $i < sizeof($infeedWidthVars['BOM']); $i++ ){
 			$infeedWidthVar = __get_properties( $infeedWidthVars, $i );
 
-			if( __test_infeed_width_vars( $infeedWidthVar, $_POST['widthmm'], $_POST['version'] ) ){
+			if( __test_infeed_width_vars( $infeedWidthVar, $_POST['widthmm'], $infeedVersion ) ){
 				$infeedWidthVar['labelBOM'] = __get_cpt( $infeedWidthVar['BOM'],$ $infeedWidthVar['cptBOM'], $_POST['widthmm'] );
 
-				die(json_encode(__get_infeed_tail_price( $infeedWidthVar )));
+				return __get_infeed_tail_price( $infeedWidthVar );
 			}
 
 		}
 
-		die(json_encode([
+		return [
 			'price'     => 0
-		]));
+		];
 	}
 
     function calculate_outfeed_tail(  ){
 		global $DATA;
 
-        validate_isset(['widthmm', 'lengthmm', 'version']);
+        validate_isset(['widthmm', 'lengthmm', 'outfeedVersion']);
 
 		$outfeedTails = $DATA['outfeedTail'];
 
 		for( $i=0; $i < sizeof( $outfeedTails['BOM'] ); $i++ ){
 			$outfeedTail = __get_properties( $outfeedTails, $i );
 
-			if( __test_outfeed_tail( $outfeedTail, $_POST['widthmm'], $_POST['lengthmm'], $_POST['version'] ) ){
+			if( __test_outfeed_tail( $outfeedTail, $_POST['widthmm'], $_POST['lengthmm'], $_POST['outfeedVersion'] ) ){
 				$outfeedTail['labelBOM'] = __get_cpt( $outfeedTail['BOM'], $outfeedTail['cptBOM'], $_POST['widthmm'] );
 
-				die(json_encode(__get_infeed_tail_price( $outfeedTail )));
+				$outfeedTail = __get_infeed_tail_price( $outfeedTail );
+				__update_slider_deduct( $outfeedTail['sliderDeduct'] );
+
+				return $outfeedTail;
 			}
 		}
 
-		die(json_encode([
+		return [
 			'price'     => 0
-		]));
+		];
 	}
 
 	function calculate_outfeed_width_vars(  ){
 		global $DATA;
 
-		validate_isset(['widthmm', 'version']);
+		validate_isset(['widthmm', 'outfeedVersion']);
 
 		$outfeedWidthVars = $DATA['outfeedWidthVars'];
 		
 		for( $i=0; $i < sizeof($outfeedWidthVars['BOM']); $i++ ){
 			$outfeedWidthVar = __get_properties( $outfeedWidthVars, $i );
 
-			if( __test_outfeed_width_vars( $outfeedWidthVar, $_POST['widthmm'], $_POST['version'] ) ){
+			if( __test_outfeed_width_vars( $outfeedWidthVar, $_POST['widthmm'], $_POST['outfeedVersion'] ) ){
 				$outfeedWidthVar['labelBOM'] = __get_cpt($outfeedWidthVar['BOM'], $outfeedWidthVar['cptBOM'], $_POST['widthmm'] );
 
-				die(json_encode(__get_infeed_tail_price( $outfeedWidthVar )));
+				return __get_infeed_tail_price( $outfeedWidthVar );
 				
 			}
 
 		}
 
-		die(json_encode([
+		return [
 			'price'	=> 0
-		]));
+		];
 	}
 
 
@@ -681,7 +695,7 @@
 
 
 			if( $test == 1 ){
-				die(json_encode(__get_motor_price( $motor )));
+				return __get_motor_price( $motor );
 			}else if( $test == 2 && $test2 == null ){
 				$test2 = __get_motor_price( $motor );
 			}else if( $test == 3 && $test3 == null ){
@@ -690,16 +704,17 @@
 		}
 
 		if( $test2 != null )
-			die(json_encode($test2));
+			return $test2;
 
 		if( $test3 != null )
-			die(json_encode($test3));
+			return $test3;
 
 
-		die(json_encode([
+		return [
 			'price'     => 0,
+			'total'		=> 0,
 			'note'      => 'Calculated horse power is invalid'
-		]));
+		];
 		
 
 	}
@@ -783,13 +798,13 @@
 		}
 
 		
-		die(json_encode([
+		return [
 			'name'	=> $sideRails['name'],
 			'price' => $price,
 			'OALmm' => $oal,
 			'desc1' => $desc1,
 			'desc2' => $desc2
-		]));
+		];
 	}
 
 
@@ -803,12 +818,12 @@
 
 
 		if( $_POST['standType'] == 'none' ){
-			die(json_encode([
+			return [
 				'name'		=> 'No Stand',
 				'basePrice' => 0,
 				'price'		=> 0,
 				'quantity'	=> 0
-			]));
+			];
 		}
 
 
@@ -819,52 +834,66 @@
 		$price = $stands['price'][ sizeof($stands['conveyorWidth']) * $j + $k ];
 
 
-		die(json_encode([
+		return [
 			'name'		=> $stands['name'],
 			'basePrice'	=> $price,
 			'quantity'	=> $_POST['standQuantity'],
 			'price'		=> $_POST['standQuantity'] * $price
-		]));
+		];
 
 	}
 
 	function calculate_stands_caster(  ){
 		global $DATA;
 
-        validate_isset(['standQuantity']);
+        validate_isset(['hasCasters', 'standQuantity']);
 
-		die(json_encode([
+		if($_POST['hasCasters'] && $_POST['standHasExtras'])
+			return [
 			'basePrice'	=> $DATA['standsCaster']['price'],
 			'quantity'	=> $_POST['standQuantity'],
 			'price'		=> $DATA['standsCaster']['price'] * $_POST['standQuantity']
-		]));
+			];
+
+		return [
+			'basePrice'		=> 0,
+			'quantity'		=> 0,
+			'price'			=> 0
+		];
 	}	
 
 	function calculate_stand_leveling(  ){
 		global $DATA;
 
-        validate_isset(['standQuantity']);
+        validate_isset(['hasLeveling', 'standQuantity']);
 
-		die(json_encode([
+		if($_POST['hasLeveling'] && $_POST['standHasExtras'])
+			return [
 			'basePrice'	=> $DATA['standsLeveling']['price'],
 			'quantity'	=> $_POST['standQuantity'],
 			'price'		=> $DATA['standsLeveling']['price'] * $_POST['standQuantity']
-		]));
+			];
+
+		return [
+			'basePrice'		=> 0,
+			'quantity'		=> 0,
+			'price'			=> 0
+		];
 	}
 
 
 	function calculate_has_stringers(  ){
 
-        validate_isset(['stand', 'standQuantity']);
+        validate_isset(['standType', 'standQuantity']);
 
-		die(json_encode($_POST['standQuantity'] > 1 && $_POST['stand'] != 'none'));
+		return $_POST['standQuantity'] > 1 && $_POST['stand'] != 'none';
 	}
 
 
 	function calculate_stringers(  ){
 		global $DATA;
 
-        validate_isset(['stand', 'length', 'standQuantity']);
+        validate_isset(['standType', 'length', 'standQuantity']);
 
 		$hasStringers = calculate_has_stringers( $_POST['stand'], $_POST['standQuantity'] );
 
@@ -874,16 +903,21 @@
 
 			for( $i=0; $i < sizeof($stringers['conveyorLength']) - 1 && $_POST['length'] > $stringers['conveyorLength'][$i]; $i++ );
 
-			die(json_encode([
+			return [
 				'basePrice'	=> $stringers['price'][$i],
 				'mtgPrice'	=> $stringers['mtgAngles'],
 				'quantity'	=> $_POST['standQuantity'],
 				'price'		=> $stringers['price'][$i] + ( $_POST['standQuantity'] * $stringers['mtgAngles'] )
-			]));
+			];
 
 		}
 
-		die(json_encode(0));
+		return [
+			'basePrice'	=> 0,
+			'mtgPrice'	=> 0,
+			'quantity'	=> 0,
+			'price'		=> 0
+		];
 
 
 	}
@@ -916,23 +950,21 @@
 			$total += $controlPrice['control3'];
 
 
-		die(json_encode([
-			'control1'=> $controlPrice['control1'],
-			'control2'=> $controlPrice['control2'],
-			'control3'=> $controlPrice['control3'],
-			'price'=> $total
-		]));
+		return [
+			'control1'	=> $controlPrice['control1'],
+			'control2'	=> $controlPrice['control2'],
+			'control3'	=> $controlPrice['control3'],
+			'price'		=> $total
+		];
 	}
 
-	function calculate_pricing(  ){
+	function calculate_pricing( $basePrice ){
 		global $DATA;
-
-        validate_isset(['basePrice']);
 
 		$n = $DATA['calculations']['pricing'];
 
 
-		$priceInc1 = ceil( $_POST['basePrice'] * ( 1 + $n['priceIncrease1'] ) );
+		$priceInc1 = ceil( $basePrice * ( 1 + $n['priceIncrease1'] ) );
 
 		$priceInc2 = ceil( $priceInc1 * ( 1 + $n['priceIncrease2'] ) );
 
@@ -944,14 +976,17 @@
 
 		$price = $yushinNet * $n['yushinMarkup'];
 
-		die(json_encode([
+		return [
 			'priceInc1'			=> $priceInc1,
 			'priceInc2'			=> $priceInc2,
 			'packagingPrice'	=> $packagingPrice,
 			'listPrice'			=> $listPrice,
 			'yushinNet'			=> $yushinNet,
 			'price'				=> $price
-		]));
+		];
+
+		
+	}
 
 		
 	}

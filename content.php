@@ -3,29 +3,34 @@
 		<div class="row m-0 flex-nowrap">
 			<div id="sidebar-spacer" class="col logo-column m-0 p-0"></div>
 			<div id="sidebar" class="col logo-column m-0 p-0">
-				<ul class="p-0 m-0">
-					<li>Standards</li>
-					<li>Specifications</li>
-					<li>Drive</li>
-					<?php if( $hasInfeedOutfeed ): ?>
-						<li>Infeed/Outfeed</li>
-					<?php endif; ?>
-					<li class="belting-step">Belting</li>
-					<li>Side Rails</li>
-					<li>Stands</li>
-					<li>Controls</li>
-					<?php if( $hasAccessories ): ?>
-						<li class="">Accessories</li>
-					<?php endif; ?>
-					<li>Customer Information</li>
-					<li id="pricing-menu">Pricing</li>
-				</ul>
-				<br>
+				<div>
+					<ul class="p-0 m-0">
+						<li>Standards</li>
+						<li>Specifications</li>
+						<li>Drive</li>
+						<?php if( $hasInfeedOutfeed ): ?>
+							<li>Infeed/Outfeed</li>
+						<?php endif; ?>
+						<li class="belting-step">Belting</li>
+						<li>Side Rails</li>
+						<li>Stands</li>
+						<li>Controls</li>
+						<?php if( $hasAccessories ): ?>
+							<li class="">Accessories</li>
+						<?php endif; ?>
+						<li>Customer Information</li>
+						<li id="pricing-menu">Pricing</li>
+					</ul>
+					<br>
 
-				<div class="text-center">
-					Want to start again?
-					<button id="restart-btn" type="button" class="btn btn-primary btn-red btn-wide">Reset Form</button>
-					
+					<div class="text-center mb-5">
+						<span>
+							Want to start again?
+						</span>
+						<button id="restart-btn" type="button" class="btn btn-primary btn-red btn-wide">Reset Form</button>
+						
+					</div>
+				
 				</div>
 			</div>
 			<div id="steps-container" class="col px-0 px-md-4 py-5">

@@ -207,7 +207,6 @@ body.cndce-waiting #content{
 }
 
 
-
 #sidebar li{
 	list-style: none;
 	background: #e4e5e7;
@@ -277,6 +276,16 @@ body.past-header #sidebar-spacer{
 body.past-header #sidebar{
 	position: fixed;
 	top: 0;
+	max-height: 100%;
+	overflow-y: auto;
+    overflow-x: visible;
+    direction: rtl;
+	width: 230px;
+    transform: translateX(-15px);
+}
+
+body.past-header #sidebar > div{
+	direction: ltr;
 }
 
 body:not(.past-header) #sidebar{

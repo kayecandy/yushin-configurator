@@ -511,6 +511,9 @@ $( document ).ready( function(  ){
 		return length * 2 + 194;
 	}
 
+	/**
+	 * TODO: Transfer to backend
+	 */
 	function getBeltPrice( drive, piw, width, length ){
 		var belt = data['belt'];
 
@@ -2172,6 +2175,8 @@ $( document ).ready( function(  ){
 
 				updateControls( json['controls'] );
 
+				updateAccessories(  );
+
 				updateCustomerInformation(  );
 
 				$( '#pricing-step .total-price' ).text( priceFormat( json['total'] ) );
@@ -2229,8 +2234,16 @@ $( document ).ready( function(  ){
 
 
 					$sideRail.val( json.sideRails );
+					if(json.sideRails != 'none'){
 					$( '#conveyor-side-rails-system-' + json.railSystem ).click(  );
+
+						if(json.railSystem == 'sf13')
 					$sideRailHeight.val( json.railsHeight ); 
+
+						if(json.sideRails == 'adjustable')
+							$sideRailUHMW.prop( 'checked', json.hasUHMW );
+
+					}
 
 
 					$( '#conveyor-stand-' + json.stands ).click(  );
@@ -2364,20 +2377,21 @@ $( document ).ready( function(  ){
 
 
 			// Accessories
-			var $accessoriesStep = $( '#accessories-step tbody' );
-			var $accessoriesTemplate = $( '.template', $accessoriesStep );
-			var accessories = data['accessories'];
+			// NOTE: Accessories eprecated on Yushin
+			// var $accessoriesStep = $( '#accessories-step tbody' );
+			// var $accessoriesTemplate = $( '.template', $accessoriesStep );
+			// var accessories = data['accessories'];
 
-			for( var i=0; i < accessories['part'].length; i++ ){
-				var $new = $accessoriesTemplate.clone(  );
-				$new.removeClass( 'template' );
+			// for( var i=0; i < accessories['part'].length; i++ ){
+			// 	var $new = $accessoriesTemplate.clone(  );
+			// 	$new.removeClass( 'template' );
 
-				$( '.accessories-part', $new ).text( accessories['part'][i] );
-				$( '.accessories-desc', $new ).text( accessories['description'][i] );
-				$( '.accessories-price', $new ).text( priceFormat( accessories['price'][i] ) );
+			// 	$( '.accessories-part', $new ).text( accessories['part'][i] );
+			// 	$( '.accessories-desc', $new ).text( accessories['description'][i] );
+			// 	$( '.accessories-price', $new ).text( priceFormat( accessories['price'][i] ) );
 
-				$accessoriesStep.append( $new );
-			}
+			// 	$accessoriesStep.append( $new );
+			// }
 
 			if( isTestMode ){
 				console.log( 'TEST MODE' );
@@ -2387,10 +2401,6 @@ $( document ).ready( function(  ){
 
 
 
-		},
-
-		complete: function( test ){
-			console.log( JSON.parse( test.responseText ) );
 		}
 	} )
 
@@ -3467,7 +3477,15 @@ $( document ).ready( function(  ){
 	}
 
 
-
+	/**
+	 * TODO!!!!
+	 * Clean up. Transfer PDF generation to PHP with 
+	 * one server call only.
+	 * 
+	 * Currenly, system calls generateQuoteNum before
+	 * generating PDF on the client side, then calling
+	 * mail endpoint with PDF attachment. (2 server calls)
+	 */
 	function sendMail( pdf, pdfFile, isRebound ){
 		var formData = new FormData(  );
 		formData.append( 'file', pdf, 'GUF-P2000_Price_Quote.pdf' );
@@ -3505,12 +3523,6 @@ $( document ).ready( function(  ){
 			}
 		} )
 	}
-
-	window.generatePDF = preGeneratePDF;
-
-
-} )
-
 
 function parseText( $child, body ){
 	if( $child.hasClass( 'd-none' ) || $child.hasClass( 'template' ) || $child.css( 'display' ) === 'none' )
@@ -3606,7 +3618,11 @@ function parseText( $child, body ){
 		}
 	}
 
+	}
+	
+	window.generatePDF = preGeneratePDF;
+
+} )
 
 
-}
 

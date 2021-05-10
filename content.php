@@ -1171,7 +1171,6 @@
 									<div class="container">
 										<div class="row">
 											<select id="customer-contact-prefix" class="col-3 mr-1 form-control" required>
-												<option>Choose...</option>
 												<option>Mr.</option>
 												<option>Ms.</option>
 												<option>Mrs.</option>

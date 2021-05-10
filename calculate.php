@@ -1,5 +1,7 @@
 <?php
 
+	require_once 'config.php';
+
     define('FT_TO_M', 0.3048);
     define('FT_TO_MM', 304.8);
     define('FT_TO_IN', 12);
@@ -15,7 +17,7 @@
     define('MPM_TO_FPM', 3.2808);
 
 
-    $DATA = json_decode(file_get_contents('data.json'), true);
+    $DATA = json_decode(file_get_contents(URL_DATA), true);
 
 
     function validate_isset($paramArray = [], $request = []){
@@ -731,7 +733,7 @@
 	function calculate_drive_train(  ){
         validate_isset(['speedMode']);
 
-		if( $_POST['speedMode'] == '' || $_POST['speedMode'] == 0 )
+		if( $_POST['speedMode'] === '' || $_POST['speedMode'] === 0 )
 			return 0;
 
 		return 60;
@@ -818,7 +820,7 @@
 	function calculate_side_rails(  ){
 		global $DATA;
 
-        validate_isset(['sideRail', 'length', 'railSystem', 'railHeight', 'hasUHMW', 'width', 'sliderDeduct']);
+		validate_isset(['sideRail']);
 
 		$sideRails = $DATA['sideRails'][$_POST['sideRail']];
 		$i=0; $j=0;
@@ -834,11 +836,14 @@
 
 		// Fixed Rails
 		if( $_POST['sideRail'] == 'fixed' ){
+			validate_isset(['length', 'railSystem', 'width']);
+
 			$laneWidth = $_POST['width'];
 			$sideRails = $sideRails[$_POST['railSystem']];
 
 			// SF1.3
 			if( $_POST['railSystem'] == 'sf13' ){
+				validate_isset(['sliderDeduct']);
 				$price = $_POST['length'] / 1000 * 30;
 
 				$oal = $_POST['length'] - $_POST['sliderDeduct'];
@@ -846,6 +851,7 @@
 
 			// SF7.1
 			}else if( $_POST['railSystem'] == 'sf71' ){
+				validate_isset(['railHeight']);
 
 				for( $i=0; $i < sizeof($sideRails['conveyorLength']) - 1 && $_POST['length'] > $sideRails['conveyorLength'][$i]; $i++ );
 

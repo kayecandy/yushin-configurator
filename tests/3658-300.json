@@ -1,10 +1,10 @@
 {
-    "width": 200,
-    "length": 3000,
+    "width": 300,
+    "length": 3658,
     "lengthUnit": "mm",
     "slider": "galvanized",
     "angle": 0,
-    "load": 40,
+    "load": 20,
     "accumulation": "continuous",
 
     "drive": "head",
@@ -13,16 +13,13 @@
 
     "belt": "460445",
 
-    "sideRails": "fixed",
-    "railSystem": "sf13",
-    "railsHeight": 50,
-    "hasUHMW": false,
+    "sideRails": "none",
 
     "stands": "leveling",
-    "standsHeight": "48",
+    "standsHeight": "1270",
+    "standsHeightUnit": "mm",
     "standsQuantity": 3,
 
-    "hasCasters": true,
-    "hasBrackets": false
+    "hasBrackets": true
 
 }

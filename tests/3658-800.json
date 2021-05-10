@@ -1,10 +1,10 @@
 {
-    "width": 700,
-    "length": 3000,
+    "width": 800,
+    "length": 3658,
     "lengthUnit": "mm",
     "slider": "galvanized",
     "angle": 0,
-    "load": 60,
+    "load": 20,
     "accumulation": "continuous",
 
     "drive": "head",
@@ -15,12 +15,9 @@
 
     "sideRails": "none",
 
-    "stands": "none",
-
-    "hasCasters": true,
-
-    "control1": true,
-    "control2": false,
-    "control3": false
+    "stands": "leveling",
+    "standsHeight": "1219",
+    "standsHeightUnit": "mm",
+    "standsQuantity": 3
 
 }

@@ -489,22 +489,20 @@ $( document ).ready( function(  ){
 
 
 	function getBeltWidthMm( width ){
-		var widthmm = Math.round( width * IN_TO_MM );
 
-		if( widthmm > 600 )
-			return widthmm - 15;
+		if( width > 600 )
+			return width - 15;
 
-		return widthmm - 10;
+		return width - 10;
 	}
 
 	function getBeltLengthMm( drive, length ){
-		var lengthmm = Math.round( length * FT_TO_MM );
 
 		if( drive == 'head' ){
-			return lengthmm * 2 + 60;
+			return length * 2 + 60;
 		}
 
-		return lengthmm * 2 + 194;
+		return length * 2 + 194;
 	}
 
 	function getBeltPrice( drive, piw, width, length ){

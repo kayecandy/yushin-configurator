@@ -184,7 +184,8 @@
 
 								</label>
 								<div class="col">
-									<input id="conveyor-length" type="number" class="form-control" step="any" value="0" data-ft-val="0" data-min-ft="0"  data-max-ft="20" data-abs-min-ft="1.34514" required>
+									<input 
+										id="conveyor-length" type="number" class="form-control" step="any" value="0" data-mm-val="0" data-min-mm="0"  data-max-mm="10000" data-abs-min-ft="1.34514" required>
 									<div class="invalid-feedback">
 								    	This is a required field.
 								    </div>
@@ -193,9 +194,27 @@
 								</div>
 								<div class="col-2 pl-0">
 									<select id="length-unit" class="form-control" data-old-val="in" required>
-										<option value="in" data-from-ft="12" selected>in.</option>
-										<option value="ft" data-from-ft="1">ft.</option>
-										<option value="mm" data-from-ft="304.8">mm</option>
+										<option 
+											value="in" 
+											data-to-mm="25.4" 
+											data-decimal="2"
+											selected
+										>	in.
+										</option>
+										<option 
+											value="ft" 
+											data-to-mm="304.8"
+											data-decimal="2"
+										>
+											ft.
+										</option>
+										<option 
+											value="mm" 
+											data-to-mm="1"
+											data-decimal="0"
+										>
+											mm
+										</option>
 									</select>
 								</div>
 							</div>

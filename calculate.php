@@ -4,6 +4,8 @@
     define('FT_TO_MM', 304.8);
     define('FT_TO_IN', 12);
 
+	define('MM_TO_M', .001);
+
     define('IN_TO_MM', 25.4);
 
     define('KG_TO_LBS', 2.2);
@@ -35,8 +37,7 @@
 
     // GET FUNCTIONS
 
-	function __get_belt_length_mm( $drive, $length ){
-		$lengthmm = round( $length * FT_TO_MM );
+	function __get_belt_length_mm( $drive, $lengthmm ){
 
 		if( $drive == 'head' ){
 			return $lengthmm * 2 + 60;
@@ -77,8 +78,7 @@
 
 	}
 
-	function __get_belt_width_mm( $width ){
-		$widthmm = round( $width * IN_TO_MM );
+	function __get_belt_width_mm( $widthmm ){
 
 		if( $widthmm > 600 )
 			return $widthmm - 15;
@@ -317,9 +317,8 @@
 		return $totalForce;
 	}
 
-	function __get_weight_of_belt( $length, $width, $beltWeight ){
-		$lengthm = $length * FT_TO_M;
-		$widthmm = round( $width * IN_TO_MM );
+	function __get_weight_of_belt( $length, $widthmm, $beltWeight ){
+		$lengthm = $length * MM_TO_M;
 
 
 		return ( ( $lengthm * 2 ) + 0.14 ) * ( $widthmm/1000 ) * $beltWeight;
@@ -504,8 +503,8 @@
         $$speedmpm = $_POST['speed'] / MPM_TO_FPM;
 
         //mm values
-        $mmWidth = round($_POST['width'] * IN_TO_MM);
-        $mmLength = round($_POST['length'] * FT_TO_MM);
+        // $mmWidth = round($_POST['width'] * IN_TO_MM);
+        // $_POST['length'] = round( * FT_TO_MM);
 
         // Material
 		// Spreadsheet v1.20 update - support roll material would
@@ -520,9 +519,9 @@
 
         //Number
         if($_POST['drive'] == 'head')
-            $number = floor( ( $mmLength - 1  ) / 3000);
+            $number = floor( ( $_POST['length'] - 1  ) / 3000);
         else
-            $number = floor( ( $mmLength - 1) / 6000 ) * 2;
+            $number = floor( ( $_POST['length'] - 1) / 6000 ) * 2;
 
         
         //Price
@@ -539,7 +538,7 @@
     function calculate_drive_version(  ){
         global $DATA;
 
-        validate_isset(['drive', 'driveVersion', 'driveLocation', 'voltage', 'widthmm', 'adapterPlate', 'motorManufacturer']);
+        validate_isset(['drive', 'driveVersion', 'driveLocation', 'voltage', 'width', 'adapterPlate', 'motorManufacturer']);
 
 		$driveVersions = $DATA['driveVersion'];
 		$n = $DATA['calculations']['BOM'];
@@ -552,13 +551,13 @@
 			$driveObj = __get_properties( $driveVersions, $i );
 
 
-			if( __test_drive( $driveObj, $isPlateHeavy, $isBodine, $n['isASAbove'], $n['isStainlessSteelDrums'], $n['isVGuidedDrums'], $_POST['widthmm'], $_POST['driveVersion'], $n['driveShafts'], $_POST['driveLocation'] ) ){
+			if( __test_drive( $driveObj, $isPlateHeavy, $isBodine, $n['isASAbove'], $n['isStainlessSteelDrums'], $n['isVGuidedDrums'], $_POST['width'], $_POST['driveVersion'], $n['driveShafts'], $_POST['driveLocation'] ) ){
 
 
 
-				$driveObj['labelBOM'] = __get_cpt( $driveObj['BOM'], $driveObj['cptBOM'], $_POST['widthmm'] );
+				$driveObj['labelBOM'] = __get_cpt( $driveObj['BOM'], $driveObj['cptBOM'], $_POST['width'] );
 
-				$driveObj['labelWidthVars'] = __get_cpt( $driveObj['widthVars'], $driveObj['cptWidthVars'], $_POST['widthmm'] );
+				$driveObj['labelWidthVars'] = __get_cpt( $driveObj['widthVars'], $driveObj['cptWidthVars'], $_POST['width'] );
 
 				$driveVersion = __get_drive_price( $driveObj );
 				__update_slider_deduct( $driveVersion['sliderDeduct'] );
@@ -579,7 +578,7 @@
     function calculate_drive_drum(  ){
         global $DATA;
 
-        validate_isset(['drive', 'driveVersion', 'widthmm', 'load', 'speed']);
+        validate_isset(['drive', 'driveVersion', 'width', 'load', 'speed']);
 
 		$driveDrums = $DATA['driveDrum'];
 		$n = $DATA['calculations']['BOM'];
@@ -592,9 +591,9 @@
 		for( $i=0; $i < sizeof($driveDrums['BOM']); $i++ ){
 			$driveDrum = __get_properties( $driveDrums, $i );
 
-			if( __test_drive_drum( $driveDrum, $driveDrumOption, $isSteelDriveDrum, $isLaggedDriveDrum, $n['isStainlessSteelDrums'], $n['isVGuidedDrums'], $_POST['widthmm'] ) ){
+			if( __test_drive_drum( $driveDrum, $driveDrumOption, $isSteelDriveDrum, $isLaggedDriveDrum, $n['isStainlessSteelDrums'], $n['isVGuidedDrums'], $_POST['width'] ) ){
 
-				$driveDrum['labelBOM'] = __get_cpt( $driveDrum['BOM'], $driveDrum['cptBOM'], $_POST['widthmm'] );
+				$driveDrum['labelBOM'] = __get_cpt( $driveDrum['BOM'], $driveDrum['cptBOM'], $_POST['width'] );
 
 				return __get_drive_drum_price( $driveDrum );
 
@@ -625,7 +624,7 @@
     function calculate_infeed_tail(  ){
         global $DATA;
 
-        validate_isset(['widthmm', 'lengthmm']);
+        validate_isset(['width', 'length']);
 
 		$infeedVersion = $DATA['calculations']['BOM']['infeedVersion'];
 		$infeedTails = $DATA['infeedTail'];
@@ -633,8 +632,8 @@
 		for( $i=0; $i < sizeof($infeedTails['BOM']); $i++ ){
 			$infeedTail = __get_properties( $infeedTails, $i );
 
-			if( __test_infeed_tail( $infeedTail, $_POST['widthmm'], $_POST['lengthmm'], $infeedVersion ) ){
-				$infeedTail['labelBOM'] = __get_cpt( $infeedTail['BOM'], $infeedTail['cptBOM'], $_POST['widthmm'] );
+			if( __test_infeed_tail( $infeedTail, $_POST['width'], $_POST['length'], $infeedVersion ) ){
+				$infeedTail['labelBOM'] = __get_cpt( $infeedTail['BOM'], $infeedTail['cptBOM'], $_POST['width'] );
 
 
 				$infeedTail = __get_infeed_tail_price( $infeedTail );
@@ -656,7 +655,7 @@
     function calculate_infeed_width_vars(  ){
         global $DATA;
 
-        validate_isset(['widthmm']);
+        validate_isset(['width']);
 
 		$infeedVersion = $DATA['calculations']['BOM']['infeedVersion'];
 		$infeedWidthVars = $DATA['infeedWidthVars'];
@@ -664,8 +663,8 @@
 		for( $i=0; $i < sizeof($infeedWidthVars['BOM']); $i++ ){
 			$infeedWidthVar = __get_properties( $infeedWidthVars, $i );
 
-			if( __test_infeed_width_vars( $infeedWidthVar, $_POST['widthmm'], $infeedVersion ) ){
-				$infeedWidthVar['labelBOM'] = __get_cpt( $infeedWidthVar['BOM'],$ $infeedWidthVar['cptBOM'], $_POST['widthmm'] );
+			if( __test_infeed_width_vars( $infeedWidthVar, $_POST['width'], $infeedVersion ) ){
+				$infeedWidthVar['labelBOM'] = __get_cpt( $infeedWidthVar['BOM'],$ $infeedWidthVar['cptBOM'], $_POST['width'] );
 
 				return __get_infeed_tail_price( $infeedWidthVar );
 			}
@@ -680,15 +679,15 @@
     function calculate_outfeed_tail(  ){
 		global $DATA;
 
-        validate_isset(['widthmm', 'lengthmm', 'outfeedVersion']);
+        validate_isset(['width', 'length', 'outfeedVersion', 'drive']);
 
 		$outfeedTails = $DATA['outfeedTail'];
 
 		for( $i=0; $i < sizeof( $outfeedTails['BOM'] ); $i++ ){
 			$outfeedTail = __get_properties( $outfeedTails, $i );
 
-			if( __test_outfeed_tail( $outfeedTail, $_POST['widthmm'], $_POST['lengthmm'], $_POST['outfeedVersion'] ) ){
-				$outfeedTail['labelBOM'] = __get_cpt( $outfeedTail['BOM'], $outfeedTail['cptBOM'], $_POST['widthmm'] );
+			if( __test_outfeed_tail( $outfeedTail, $_POST['width'], $_POST['length'], $_POST['outfeedVersion'] ) ){
+				$outfeedTail['labelBOM'] = __get_cpt( $outfeedTail['BOM'], $outfeedTail['cptBOM'], $_POST['width'] );
 
 				$outfeedTail = __get_infeed_tail_price( $outfeedTail );
 				__update_slider_deduct( $outfeedTail['sliderDeduct'] );
@@ -705,15 +704,15 @@
 	function calculate_outfeed_width_vars(  ){
 		global $DATA;
 
-		validate_isset(['widthmm', 'outfeedVersion']);
+		validate_isset(['width', 'outfeedVersion']);
 
 		$outfeedWidthVars = $DATA['outfeedWidthVars'];
 		
 		for( $i=0; $i < sizeof($outfeedWidthVars['BOM']); $i++ ){
 			$outfeedWidthVar = __get_properties( $outfeedWidthVars, $i );
 
-			if( __test_outfeed_width_vars( $outfeedWidthVar, $_POST['widthmm'], $_POST['outfeedVersion'] ) ){
-				$outfeedWidthVar['labelBOM'] = __get_cpt($outfeedWidthVar['BOM'], $outfeedWidthVar['cptBOM'], $_POST['widthmm'] );
+			if( __test_outfeed_width_vars( $outfeedWidthVar, $_POST['width'], $_POST['outfeedVersion'] ) ){
+				$outfeedWidthVar['labelBOM'] = __get_cpt($outfeedWidthVar['BOM'], $outfeedWidthVar['cptBOM'], $_POST['width'] );
 
 				return __get_infeed_tail_price( $outfeedWidthVar );
 				
@@ -821,26 +820,25 @@
 		$sideRails = $DATA['sideRails'][$_POST['sideRail']];
 		$i=0; $j=0;
 
-		$lengthmm = $_POST['length'] * FT_TO_MM;
 
 		$price = 0;
 		$oal = '';
 		$desc1 = '';
 		$desc2 = '';
 
-		$widthmm = round( $_POST['width'] * IN_TO_MM );
-		$laneWidth = $widthmm;
+
 
 
 		// Fixed Rails
 		if( $_POST['sideRail'] == 'fixed' ){
+			$laneWidth = $_POST['width'];
 			$sideRails = $sideRails[$_POST['railSystem']];
 
 			// SF1.3
 			if( $_POST['railSystem'] == 'sf13' ){
-				$price = $lengthmm / 1000 * 30;
+				$price = $_POST['length'] / 1000 * 30;
 
-				$oal = $lengthmm - $_POST['sliderDeduct'];
+				$oal = $_POST['length'] - $_POST['sliderDeduct'];
 				$laneWidth -= 2;
 
 			// SF7.1
@@ -852,7 +850,7 @@
 
 				$price = 2 * $sideRails['price'][ $i * sizeof($sideRails['railHeight']) + $j ];
 
-				$oal = $lengthmm;
+				$oal = $_POST['length'];
 			}
 
 			$desc1 = 'H=' . $_POST['railHeight'] . ' mm';
@@ -861,9 +859,10 @@
 
 		// Adjustable Rails
 		}else if( $_POST['sideRail'] == 'adjustable' ){
+			validate_isset(['length', 'hasUHMW', 'width']);
 
 			$from = 0;
-			$to = $widthmm + 60;
+			$to = $_POST['width'] + 60;
 
 			$umhw = 'no';
 
@@ -875,14 +874,14 @@
 				$desc1 = 'UHMW backed Aluminum Side Rails';
 			}
 
-			if( $widthmm > 140 )
-				$from = $widthmm - 140;
+			if( $_POST['width'] > 140 )
+				$from = $_POST['width'] - 140;
 
 			for( $i=0; $i < sizeof($sideRails['conveyorLength']) - 1 && $_POST['length'] > $sideRails['conveyorLength'][$i]; $i++ );
 
 
 			$price = 2 * $sideRails['price'][$umhw][$i];
-			$oal = $lengthmm;
+			$oal = $_POST['length'];
 			$desc2 = 'Lane width adjustable from ' + $from + ' mm to ' + $to + ' mm';
 
 		}else{
@@ -1120,8 +1119,6 @@
 
 	function calculate(  ){
 		// Derived parameters
-		$_POST['widthmm'] = $_POST['width'] * IN_TO_MM;
-		$_POST['lengthmm'] = $_POST['length'] * FT_TO_MM;
 		$_POST['outfeedVersion'] = __get_outfeed_version( $_POST['drive'] );
 		$_POST['standHasExtras'] = __get_stand_has_extras( $_POST['standType'] );
 		$_POST['sliderDeduct'] = 0;

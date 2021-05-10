@@ -1344,7 +1344,12 @@ $( document ).ready( function(  ){
 	// Updates
 	function updateBeltPrices(  ){
 		$( '#belt-step .belt-row' ).each( function(  ){
-			var beltPrice = getBeltPrice( $drive.filter( ':checked' ).val(  ), $( '.belt-price', this ).data( 'piw' ), $width.val(  ) , $length.data( 'ft-val' ) );
+			var beltPrice = getBeltPrice( 
+				$drive.filter( ':checked' ).val(  ), 
+				$( '.belt-price', this ).data( 'piw' ), 
+				$width.val(  ) , 
+				$length.data( 'mm-val' ) 
+			);
 
 			$( '.belt-price', this ).text( priceFormat( beltPrice ) );
 			$( this ).data( 'price', beltPrice );
@@ -1355,15 +1360,15 @@ $( document ).ready( function(  ){
 	function updateFramePrice( framePrice ){
 
 		$( '#pricing-step .frame-price' ).text( priceFormat( framePrice ) );
-		$( '#pricing-step .frame-width' ).text( $width.val(  ) + '"' );
-		$( '#pricing-step .frame-length' ).text( $length.data( 'ft-val' ).toFixed( 2 ) + '\'' );
+		$( '#pricing-step .frame-width' ).text( ($width.val(  ) / IN_TO_MM).toFixed(2) + '" / ' + $width.val(  ) + 'mm' );
+		$( '#pricing-step .frame-length' ).text( ( $length.data( 'mm-val' ) / FT_TO_MM ).toFixed(2) + '\' / ' + $length.data( 'mm-val' ) + 'mm' );
 
 
 		// Table
-		$( '#pricing-step .frame-width-mm' ).text( Math.round( $width.val(  ) * IN_TO_MM ) );
-		$( '#pricing-step .frame-width-in' ).text( Math.round( $width.val(  ) ) );
-		$( '#pricing-step .frame-length-mm' ).text( Math.round( $length.data( 'ft-val' ) * FT_TO_MM ) );
-		$( '#pricing-step .frame-length-in' ).text( Math.round( $length.data( 'ft-val' ) * FT_TO_IN ) );
+		$( '#pricing-step .frame-width-mm' ).text( $width.val(  ) );
+		$( '#pricing-step .frame-width-in' ).text( Math.round( $width.val(  ) / IN_TO_MM ) );
+		$( '#pricing-step .frame-length-mm' ).text( Math.round( $length.data( 'mm-val' ) ) );
+		$( '#pricing-step .frame-length-in' ).text( Math.round( $length.data( 'mm-val' ) / IN_TO_MM ) );
 
 		if( $angle.val(  ) == 0 ){
 			$( '#pricing-step .incline-label' ).text( 'Conveyor is horizontal' );
@@ -1674,7 +1679,7 @@ $( document ).ready( function(  ){
 			 * TODO: Move to backend
 			 */
 			var beltWidthmm = getBeltWidthMm( $width.val(  ) );
-			var beltLengthmm = getBeltLengthMm( $drive.filter( ':checked' ).val(  ), $length.data('ft-val') );
+			var beltLengthmm = getBeltLengthMm( $drive.filter( ':checked' ).val(  ), $length.data('mm-val') );
 
 			$( '#pricing-step .belt-number' ).text( $( '.belt-num', $selected ).text(  ) );
 			$( '#pricing-step .belt-color' ).text( $( '.belt-color', $selected ).text(  ) );
@@ -2095,7 +2100,7 @@ $( document ).ready( function(  ){
 					'speed'			: $speed.val(  ),
 					'load'			: $load.val(  ),
 					'width'			: $width.val(  ),
-					'length'		: $length.data( 'ft-val' ),
+					'length'		: Math.round($length.data( 'mm-val' ) ),
 					'angle'			: $angle.val(  )
 				},
 				success: resolve,
@@ -2107,15 +2112,10 @@ $( document ).ready( function(  ){
 		});
 	}
 
-	function submitForm(  ){
-		
-		$.ajax({
-			url: URL_CALCULATE,
-			method: 'POST',
-			dataType: 'json',
-			data: {
+	function getFormData(){
+		return {
 				'width'					: $width.val(  ),
-				'length'				: $length.data( 'ft-val' ),
+				'length'				: $length.data( 'mm-val' ),
 				'slider'				: $slider.val(  ),
 				'drive'					: $drive.filter( ':checked' ).val(  ),
 				'speed'					: $speed.val(  ),
@@ -2134,9 +2134,9 @@ $( document ).ready( function(  ){
 				'railSystem'			: $sideRailSystem.filter( ':checked' ).val(  ),
 				'railHeight'			: $sideRailHeight.val(  ),
 				'hasUHMW'				: $sideRailUHMW.prop( 'checked' ),
-				'standType'				: $standType.filter( ':checked' ).val(  ),
 
-				'standHeight'			: $standHeight.val(  ),
+				'standType'				: $standType.filter( ':checked' ).val(  ),
+				'standHeight'			: $standHeight.data( 'mm-val' ),
 				'standQuantity'			: $standQuantity.val(  ),
 				'hasLeveling'			: $hasLeveling.prop( 'checked' ) ? 1 : 0,
 				'hasCasters'			: $hasCasters.prop( 'checked' ) ? 1 : 0,
@@ -2146,12 +2146,18 @@ $( document ).ready( function(  ){
 				'control2'				: $control2.prop( 'checked' ) ? 1 : 0,
 				'control3'				: $control3.prop( 'checked' ) ? 1 : 0,
 
-			},
+		};
+	}
+
+	function submitForm(  ){
+		
+		$.ajax({
+			url: URL_CALCULATE,
+			method: 'POST',
+			dataType: 'json',
+			data: getFormData(),
 			success: function( json ){
 				var parts = json['parts'];
-
-				console.log(json, parts);
-
 
 				updateFramePrice( parts['frame_price'] );
 		
@@ -2293,9 +2299,9 @@ $( document ).ready( function(  ){
 			// Width
 			for( var i=0; i<data['conveyorWidth'].length; i++ ){
 				var width = data['conveyorWidth'][i];
-				var mm = Math.round( width * IN_TO_MM );
+				var inch = ( width / IN_TO_MM ).toFixed(2);
 
-				$width.append( '<option value="' + width + '">' + width + '\" / ' + mm + ' mm</option>' )
+				$width.append( '<option value="' + width + '">' + width + ' mm / ' + inch + '\"</option>' )
 			}
 			
 			// Length Unit
@@ -2526,21 +2532,24 @@ $( document ).ready( function(  ){
 		var $selectedUnit = $( ':selected', $lengthUnit );
 		var $lengthLabel = $( 'label[for="conveyor-length"]' );
 
-		var widthFt = $width.val(  ) / FT_TO_IN;
+		var widthmm = $width.val(  );
 
-		var minFt = Math.max( widthFt * 2, $length.data( 'abs-min-ft' )	);
-		var min = Math.round( minFt * $selectedUnit.data( 'from-ft' ) );
+		// TODO: Confirm no more absolute minimum width
+		// var minmm = Math.max( widthmm * 2, $length.data( 'abs-min-ft' )	);
+		var minmm = widthmm * 2;
+
+		var min = minmm / $selectedUnit.data( 'to-mm' );
 
 
-		var maxFt = $length.data( 'max-ft' );
-		var max = Math.round( maxFt * $selectedUnit.data( 'from-ft' ) );
+		var maxmm = $length.data( 'max-mm' );
+		var max = maxmm / $selectedUnit.data( 'to-mm' );
 
-		$length.data( 'min-ft', minFt );
+		$length.data( 'min-mm', minmm );
 		$length.attr( 'min', min );
 		$length.attr( 'max', max );
 
-		$( '.min-value', $lengthLabel ).text( 'Min Value: ' + min + ' ' + $selectedUnit.val(  ) );
-		$( '.max-value', $lengthLabel ).text( 'Max Value: ' + max + ' ' + $selectedUnit.val(  ) );
+		$( '.min-value', $lengthLabel ).text( 'Min Value: ' + min.toFixed( $selectedUnit.data( 'decimal' ) ) + ' ' + $selectedUnit.val(  ) );
+		$( '.max-value', $lengthLabel ).text( 'Max Value: ' + max.toFixed( $selectedUnit.data( 'decimal' ) ) + ' ' + $selectedUnit.val(  ) );
 	}
 
 
@@ -2548,7 +2557,7 @@ $( document ).ready( function(  ){
 		// Belt
 		// updateBeltPrices(  );
 
-		if( $width.val(  ) <= 3.94 ){
+		if( $width.val(  ) <= 100 ){
 			$( '#steps-container' ).addClass( 'no-telescoping-stand' );
 			$standType.prop( 'checked', false );
 		}else{
@@ -2563,12 +2572,12 @@ $( document ).ready( function(  ){
 		
 
 
-		// Update ft-val
-		$length.data( 'ft-val', $length.val(  ) / $( ':selected', $lengthUnit ).data( 'from-ft' ) );
+		// Update mm-val
+		$length.data( 'mm-val', Math.round($length.val(  ) * $( ':selected', $lengthUnit ).data( 'to-mm' )) );
 
 
 		// Update recommended stand quantity
-		$( '#stand-quantity-input .stand-recommended-quantity' ).text( Math.ceil( ( $length.data( 'ft-val' ) * FT_TO_MM ) / 2500 ) + 1 );
+		$( '#stand-quantity-input .stand-recommended-quantity' ).text( Math.ceil(  $length.data( 'mm-val' )  / 2500 ) + 1 );
 
 
 		// Belt
@@ -2578,15 +2587,15 @@ $( document ).ready( function(  ){
 	} )
 
 	$lengthUnit.change( function( e ){
+		$selectedUnit = $(':selected', $lengthUnit);
+		var tomm = $selectedUnit.data( 'to-mm' );
+		var mmVal = $length.data( 'mm-val' );
 
-		var fromFt = $(':selected', $lengthUnit).data( 'from-ft' );
-		var ft = $length.data( 'ft-val' );
-
-		var val = ft * fromFt;
+		var val = mmVal / tomm;
 
 
-		$length.val( val );
-		$length.data( 'ft-val', ft );
+		$length.val( val.toFixed( $selectedUnit.data( 'decimal' ) ) );
+		$length.data( 'mm-val', mmVal );
 
 		updateLengthMinMax(  );
 		$length.trigger( 'change' );

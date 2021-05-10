@@ -1060,24 +1060,28 @@
 		$n = $DATA['calculations']['pricing'];
 
 
-		$priceInc1 = ceil( $basePrice * ( 1 + $n['priceIncrease1'] ) );
+		$priceInc1 = ceil( $basePrice + ( $basePrice * $n['priceIncrease1'] ) );
 
-		$priceInc2 = ceil( $priceInc1 * ( 1 + $n['priceIncrease2'] ) );
+		$priceInc2 = ceil( $priceInc1 + ( $priceInc1 * $n['priceIncrease2'] ) );
 
 		$packagingPrice = ceil( $priceInc2 * $n['packaging'] );
 
 		$listPrice = $priceInc2 + $packagingPrice;
 
-		$yushinNet = ceil( $listPrice * ( 1 - $n['discount'] ) ) * $n['mkMarkup'];
+		$yushinNet = ceil( $listPrice - ( $listPrice * $n['discount'] ) ) * $n['mkMarkup'];
 
 		$price = $yushinNet * $n['yushinMarkup'];
 
 		return [
 			'priceInc1'			=> $priceInc1,
+			'priceInc1Percent'	=> ($n['priceIncrease1'] * 100) . '%',
 			'priceInc2'			=> $priceInc2,
+			'priceInc2Percent'	=> ($n['priceIncrease2'] * 100) . '%',
 			'packagingPrice'	=> $packagingPrice,
 			'listPrice'			=> $listPrice,
+			'discount'			=> ($n['discount'] * 100) . '%',
 			'yushinNet'			=> $yushinNet,
+			'yushinMarkup'		=> ($n['yushinMarkup'] * 100) . '%',
 			'price'				=> $price
 		];
 

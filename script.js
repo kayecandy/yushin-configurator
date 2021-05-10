@@ -1953,16 +1953,14 @@ $( document ).ready( function(  ){
 
 
 	function updatePricing( basePrice, prices ){
-		// var prices = calculatePricing( basePrice );
-		var n = data['calculations']['pricing'];
 
 		$( '#pricing-step .base-price' ).text( priceFormat( Math.round( basePrice ) ) );
-		$( '#pricing-step .price-inc1' ).text( ( n['priceIncrease1'] * 100 ) + '%' );
+		$( '#pricing-step .price-inc1' ).text( prices['priceInc1Percent'] );
 
 		$( '#pricing-step .price-inc1-price' ).text( priceFormat( prices['priceInc1'] ) );
 
 
-		$( '#pricing-step .price-inc2' ).text( ( n['priceIncrease2'] * 100 ) + '%' );
+		$( '#pricing-step .price-inc2' ).text( prices['priceInc2Percent'] );
 
 		$( '#pricing-step .price-inc2-price' ).text( priceFormat( prices['priceInc2'] ) );
 
@@ -1972,11 +1970,11 @@ $( document ).ready( function(  ){
 		$( '#pricing-step .price-list-price' ).text( priceFormat( prices['listPrice'] ) );
 
 
-		$( '#pricing-step .price-discount' ).text( ( n['discount'] * 100 ) + '%' );
+		$( '#pricing-step .price-discount' ).text( prices['discount'] );
 
 		$( '#pricing-step .price-yushin-net' ).text( priceFormat( prices['yushinNet'] ) );
 
-		$( '#pricing-step .price-markup' ).text( n['yushinMarkup'] );
+		$( '#pricing-step .price-markup' ).text( prices['yushinMarkup'] );
 
 		$( '#pricing-step .price-total' ).text( priceFormat( prices['price'] ) );
 

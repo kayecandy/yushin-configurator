@@ -918,19 +918,45 @@
 							<div id="stand-height-input" class="form-group row">
 								<label for="conveyor-stand-height" class="col-3 col-form-label">
 									Stand Height
-									<small class="form-text text-info">Min Value: 14"<br></small>
+									<small class="form-text text-info">Min Value: <span id="stand-height-min-value"></span><br></small>
 
-									<small class="form-text text-info">Max Value: 100"</small>
+									<small class="form-text text-info">Max Value: <span id="stand-height-max-value"></span></small>
 								</label>
 								<div class="col">
-									<input id="conveyor-stand-height" type="number" class="form-control" min="14" max="100" step="any" required>
+									<input id="conveyor-stand-height" type="number" class="form-control" step="any" required>
 									<div class="invalid-feedback">
 										This is a required field.
 									</div>
 								</div>
 
-								<div class="col-2">
-									<span class="py-3">in</span>
+								<div class="col-2 pl-0">
+									<select
+										id="stand-height-unit"
+										class="form-control"	
+										required
+									>
+										<option
+											value="mm"
+											data-min="355"
+											data-min-label="355 mm"
+											data-max="2540"
+											data-max-label="2540 mm"
+											data-to-mm="1"
+											data-decimal="0"
+											selected
+										>
+											mm
+										</option>
+										<option
+											value="in"
+											data-min="14"
+											data-min-label="14&quot;"
+											data-max="100"
+											data-max-label="100&quot;"
+											data-to-mm="25.4"
+											data-decimal="2"
+										>in.</option>
+									</select>
 								</div>
 							</div>
 

@@ -46,6 +46,7 @@ $( document ).ready( function(  ){
 
 	var $standType = $( 'input[name=conveyor-stand]' );
 	var $standHeight = $( '#conveyor-stand-height' );
+	var $standHeightUnit = $( '#stand-height-unit' );
 	var $standQuantity = $( '#conveyor-stand-quantity' );
 	var $hasCasters = $( '#conveyor-has-caster' );
 	var $hasLeveling = $( '#conveyor-has-bracket' );
@@ -2245,11 +2246,18 @@ $( document ).ready( function(  ){
 
 
 					$( '#conveyor-stand-' + json.stands ).click(  );
+					if(json.stands == 'leveling'){
+						$standHeightUnit.val( json.standsHeightUnit );
+						$standHeightUnit.trigger( 'change' );
+	
 					$standHeight.val( json.standsHeight );
+						$standHeight.trigger( 'change' );
+	
 					$standQuantity.val( json.standsQuantity );
 
 					$hasCasters.prop( 'checked', json.hasCasters );
 					$hasLeveling.prop( 'checked', json.hasBrackets );
+					}
 
 
 					// Controls
@@ -2306,6 +2314,10 @@ $( document ).ready( function(  ){
 			
 			// Length Unit
 			$lengthUnit.trigger( 'change' );
+
+			// Stand Height Unit
+			$standHeight.trigger( 'change' );
+			$standHeightUnit.trigger( 'change' );
 
 			// Belting
 			var $beltStep = $( '#belt-step tbody' );
@@ -2659,6 +2671,7 @@ $( document ).ready( function(  ){
 			$standHeight.prop( 'required', false );
 			$standHeight.val( '' );
 			$standQuantity.prop( 'required', false );
+			$standHeightUnit.prop( 'required', false );
 		}else{
 			$( '#steps-container' ).removeClass( 'no-stands' );
 			$standHeight.prop( 'required', true );
@@ -2666,6 +2679,27 @@ $( document ).ready( function(  ){
 
 		}
 
+	} )
+
+	$standHeight.change( function(  ){
+		$selectedUnit = $( ':selected', $standHeightUnit );
+
+
+		$standHeight.data( 'mm-val', Math.round($standHeight.val(  ) * $selectedUnit.data( 'to-mm' )) );
+	} )
+
+	$standHeightUnit.change( function(  ){
+		$selectedUnit = $(':selected', this);
+		
+		// Update min/max of stand height
+		$standHeight.attr( 'min', $selectedUnit.data( 'min' )  );
+		$standHeight.attr( 'max', $selectedUnit.data('max') );
+
+		$( '#stand-height-min-value' ).text( $selectedUnit.data( 'min-label' ) );
+		$( '#stand-height-max-value' ).text( $selectedUnit.data( 'max-label' ) );
+
+		// Update value of stand height input
+		$standHeight.val( ($standHeight.data( 'mm-val' ) / $selectedUnit.data( 'to-mm' )).toFixed( $selectedUnit.data( 'decimal' ) ) );
 	} )
 
 

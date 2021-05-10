@@ -638,6 +638,7 @@
 
 				$infeedTail = __get_infeed_tail_price( $infeedTail );
 				__update_slider_deduct( $infeedTail['sliderDeduct'] );
+				$infeedTail['infeedVersion'] = $infeedVersion;
 
 				return $infeedTail;
 
@@ -647,8 +648,8 @@
 
 
 		return [
-			'labelBOM'  => 'No Infeed Tail',
-			'price'     => 0
+			'labelBOM'  		=> 'No Infeed Tail',
+			'price'     		=> 0
 		];
 	}
 
@@ -691,6 +692,8 @@
 
 				$outfeedTail = __get_infeed_tail_price( $outfeedTail );
 				__update_slider_deduct( $outfeedTail['sliderDeduct'] );
+
+				$outfeedTail['outfeedVersion'] = __get_outfeed_version($_POST['drive']);
 
 				return $outfeedTail;
 			}

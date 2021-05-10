@@ -417,13 +417,6 @@ $( document ).ready( function(  ){
 	
 
 	// Infeed/Oufeed Functions
-	function getOutfeedVersion( drive ){
-		if( drive == 'center' )
-			return 1;
-
-		return 0;
-	}
-
 	function testInfeedTail( infeedTail, widthmm, lengthmm, version ){
 		// console.log( 'version' );
 		if( infeedTail['version'] != version )
@@ -1445,13 +1438,6 @@ $( document ).ready( function(  ){
 	}
 
 	function updateInfeedOutfeed( infeedTail, infeedWidthVars, outfeedTail, outfeedWidthVars, driveTrainPrice ){
-		var n = data['calculations']['BOM'];
-
-		/**
-		 * TODO: Move to backend when PDF generation is migrated as well
-		 */
-		var versionInfeed = n['infeedVersion'];
-		var versionOutfeed = getOutfeedVersion( $drive.filter( ':checked' ).val(  ) );
 
 		// Infeed Tail
 		$( '#pricing-step .infeed-tail-part' ).text( infeedTail['labelBOM'] );
@@ -1496,13 +1482,13 @@ $( document ).ready( function(  ){
 
 		// Table
 		// $( '#pricing-step .infeed-tail-label' ).text( $( ':selected', $infeed ).text(  ) );
-		$( '#pricing-step .infeed-tail-label' ).text( versionInfeed );
+		$( '#pricing-step .infeed-tail-label' ).text( infeedTail['infeedVersion'] );
 
 
 		if( $drive.filter( ':checked' ).val(  ) == 'head' )
 			$( '#pricing-step .discharge-tail-label' ).text( 'N/A' );
 		else
-			$( '#pricing-step .discharge-tail-label' ).text( versionOutfeed );
+			$( '#pricing-step .discharge-tail-label' ).text( outfeedTail['outfeedVersion'] );
 
 
 	}

@@ -2,8 +2,9 @@
 
 // This is the sample contents of config.php
 
-define( 'URL_API', './test.php' );
+define( 'URL_API', './api.php' );
 define( 'URL_DATA', './data.json' );
+define( 'URL_META', 'api.php?action=get_meta_data' );
 define( 'URL_MAIL', './mail.php' );
 define( 'URL_TEST_DEFAULT', './tests/default.json' );
 define( 'URL_CALCULATE', './calculate.php' );

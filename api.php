@@ -1,6 +1,9 @@
 <?php 
 	require_once( 'config.php' );
 
+    $DATA = json_decode(file_get_contents(URL_DATA), true);
+
+
 	function get_quote_num(){
 		try{
 			$conn = get_connection();
@@ -38,6 +41,26 @@
 		
 	}
 
-	echo get_quote_num();
+	// echo get_quote_num();
 	
+	function get_meta_data() {
+		global $DATA;
+
+
+		return [
+			'conveyorWidth'				=> $DATA['conveyorWidth'],
+			'belt'						=> $DATA['belt']
+		];
+	}
+
+
+	if(isset($_REQUEST['action'])){
+		die(json_encode(
+			call_user_func($_REQUEST['action'])
+		));
+	}else{
+		echo get_quote_num();
+	}
+
+
 ?>

@@ -2286,7 +2286,7 @@ $( document ).ready( function(  ){
 	// Ajax
 	$.ajax( {
 		dataType: 'json',
-		url: URL_DATA,
+		url: URL_META,
 		success: function( json ){
 			data = json;
 			console.log( json );

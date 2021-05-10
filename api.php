@@ -1,7 +1,7 @@
 <?php 
 	require_once( 'config.php' );
 
-    $DATA = json_decode(file_get_contents(URL_DATA), true);
+    const DATA = json_decode(file_get_contents(URL_DATA), true);
 
 
 	function get_quote_num(){
@@ -44,12 +44,10 @@
 	// echo get_quote_num();
 	
 	function get_meta_data() {
-		global $DATA;
-
 
 		return [
-			'conveyorWidth'				=> $DATA['conveyorWidth'],
-			'belt'						=> $DATA['belt']
+			'conveyorWidth'				=> DATA['conveyorWidth'],
+			'belt'						=> DATA['belt']
 		];
 	}
 

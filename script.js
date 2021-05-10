@@ -2116,7 +2116,7 @@ $( document ).ready( function(  ){
 				'speedMode'				: $speedMode.val(  ),
 				'load'					: $load.val(  ),
 				'angle'					: $angle.val(  ),
-				'driveVersion'			: $( ':selected', $driveVersion ).data( 'version' ),
+				'driveVersion'			: $( ':selected', $driveVersion ).val(  ),
 				'driveLocation'			: $driveLocation.val(  ),
 
 				'belt'					: $( '#belt-step .belt-row.selected' ).attr('data-belt-num'),
@@ -2130,7 +2130,7 @@ $( document ).ready( function(  ){
 				'standType'				: $standType.filter( ':checked' ).val(  ),
 				'standHeight'			: $standHeight.data( 'mm-val' ),
 				'standQuantity'			: $standQuantity.val(  ),
-				'hasLeveling'			: $hasLeveling.prop( 'checked' ) ? 1 : 0,
+				'hasBrackets'			: $hasLeveling.prop( 'checked' ) ? 1 : 0,
 				'hasCasters'			: $hasCasters.prop( 'checked' ) ? 1 : 0,
 
 

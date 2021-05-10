@@ -13,12 +13,12 @@
 
     "belt": "460445",
 
-    "sideRails": "none",
+    "sideRail": "none",
 
-    "stands": "leveling",
-    "standsHeight": "1270",
-    "standsHeightUnit": "mm",
-    "standsQuantity": 3,
+    "standType": "leveling",
+    "standHeight": "1270",
+    "standHeightUnit": "mm",
+    "standQuantity": 3,
 
     "hasBrackets": true
 

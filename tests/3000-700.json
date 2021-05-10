@@ -13,9 +13,9 @@
 
     "belt": "460445",
 
-    "sideRails": "none",
+    "sideRail": "none",
 
-    "stands": "none",
+    "standType": "none",
 
     "hasCasters": true,
 

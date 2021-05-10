@@ -16,8 +16,17 @@
 
     define('MPM_TO_FPM', 3.2808);
 
+	const DRIVE_VERSION = [
+		'ac-below'		=> 'AC',
+		'ac-above'		=> 'AC',
+		'am'			=> 'AM',
+		'au-below'		=> 'AU',
+		'au-above'		=> 'AU',
+		'bc'			=> 'BC'
+	];
 
-    $DATA = json_decode(file_get_contents(URL_DATA), true);
+
+    const DATA = json_decode(file_get_contents(URL_DATA), true);
 
 
     function validate_isset($paramArray = [], $request = []){
@@ -49,9 +58,9 @@
 	}
 
 	function __get_belt_details( $beltNum ){
-		global $DATA;
+		
 
-		$belt = $DATA['belt'];
+		$belt = DATA['belt'];
 
 		// TODO: Reimplement and complete return
 		$iBelt = array_search($beltNum, $belt['beltNumber']);
@@ -63,9 +72,8 @@
 	}
 
 	function __get_belt_price( $drive, $piw, $width, $length ){
-		global $DATA;
-
-		$belt = $DATA['belt'];
+		
+		$belt = DATA['belt'];
 
 		$beltWidth = __get_belt_width_mm( $width ) / IN_TO_MM;
 		$beltLength = __get_belt_length_mm( $drive, $length ) / FT_TO_MM;
@@ -242,9 +250,8 @@
 	}
 
     function __get_part( $part ){
-        global $DATA;
-
-		$parts = $DATA['parts'];
+        
+		$parts = DATA['parts'];
 
 		if( $part === 0 || $part == '' ){
 			return [
@@ -278,9 +285,9 @@
 	}
 
 	function __get_speed_range( $motorSpeed, $speedMode ){
-		global $DATA;
+		
 
-		$speedRange = $DATA['calculations']['speedRange'][$speedMode];
+		$speedRange = DATA['calculations']['speedRange'][$speedMode];
 
 		$returnRange = [];
 
@@ -469,12 +476,11 @@
 
     // CALCULATE FUNCTIONS
     function calculate_frame_price(){
-        global $DATA;
-
+        
         validate_isset(['width', 'length', 'slider']);
 
 
-        $frame = $DATA['frame'];
+        $frame = DATA['frame'];
         $i = 0; $j = 0;
 
 
@@ -493,12 +499,11 @@
     }
 
     function calculate_support_rolls_price(){
-        global $DATA;
-
+        
         validate_isset(['drive', 'width', 'length', 'speed']);
 
 
-        $supportRolls = $DATA['supportRolls'];
+        $supportRolls = DATA['supportRolls'];
         $material = 'steel';
         $i = 0;
 
@@ -538,14 +543,13 @@
 
 
     function calculate_drive_version(  ){
-        global $DATA;
-
+        
         validate_isset(['drive', 'driveVersion', 'driveLocation', 'voltage', 'width', 'adapterPlate', 'motorManufacturer']);
 
-		$driveVersions = $DATA['driveVersion'];
-		$n = $DATA['calculations']['BOM'];
+		$driveVersions = DATA['driveVersion'];
+		$n = DATA['calculations']['BOM'];
 
-		$isPlateHeavy = __get_is_plate_heavy( $_POST['driveVersion'], $n['quote16'] );
+		$isPlateHeavy = __get_is_plate_heavy( DRIVE_VERSION[$_POST['driveVersion']], $n['quote16'] );
 		$isBodine = __get_is_bodine( $_POST['motorManufacturer'], $_POST['adapterPlate'] );
 
 
@@ -553,7 +557,7 @@
 			$driveObj = __get_properties( $driveVersions, $i );
 
 
-			if( __test_drive( $driveObj, $isPlateHeavy, $isBodine, $n['isASAbove'], $n['isStainlessSteelDrums'], $n['isVGuidedDrums'], $_POST['width'], $_POST['driveVersion'], $n['driveShafts'], $_POST['driveLocation'] ) ){
+			if( __test_drive( $driveObj, $isPlateHeavy, $isBodine, $n['isASAbove'], $n['isStainlessSteelDrums'], $n['isVGuidedDrums'], $_POST['width'], DRIVE_VERSION[$_POST['driveVersion']], $n['driveShafts'], $_POST['driveLocation'] ) ){
 
 
 
@@ -578,14 +582,13 @@
 	}
 
     function calculate_drive_drum(  ){
-        global $DATA;
-
+        
         validate_isset(['drive', 'driveVersion', 'width', 'load', 'speed']);
 
-		$driveDrums = $DATA['driveDrum'];
-		$n = $DATA['calculations']['BOM'];
+		$driveDrums = DATA['driveDrum'];
+		$n = DATA['calculations']['BOM'];
 
-		$driveDrumOption = __get_drive_drum_option( $_POST['drive'], $_POST['driveVersion'] );
+		$driveDrumOption = __get_drive_drum_option( $_POST['drive'], DRIVE_VERSION[$_POST['driveVersion']] );
 		$isSteelDriveDrum = __get_is_steel_drive_drum( $_POST['drive'], $_POST['load'], $_POST['speed'] );
 		$isLaggedDriveDrum = __get_is_lagged_drive_drum( $isSteelDriveDrum );
 
@@ -624,12 +627,11 @@
 	}
 
     function calculate_infeed_tail(  ){
-        global $DATA;
-
+        
         validate_isset(['width', 'length']);
 
-		$infeedVersion = $DATA['calculations']['BOM']['infeedVersion'];
-		$infeedTails = $DATA['infeedTail'];
+		$infeedVersion = DATA['calculations']['BOM']['infeedVersion'];
+		$infeedTails = DATA['infeedTail'];
 
 		for( $i=0; $i < sizeof($infeedTails['BOM']); $i++ ){
 			$infeedTail = __get_properties( $infeedTails, $i );
@@ -656,12 +658,11 @@
 	}
 
     function calculate_infeed_width_vars(  ){
-        global $DATA;
-
+        
         validate_isset(['width']);
 
-		$infeedVersion = $DATA['calculations']['BOM']['infeedVersion'];
-		$infeedWidthVars = $DATA['infeedWidthVars'];
+		$infeedVersion = DATA['calculations']['BOM']['infeedVersion'];
+		$infeedWidthVars = DATA['infeedWidthVars'];
 		
 		for( $i=0; $i < sizeof($infeedWidthVars['BOM']); $i++ ){
 			$infeedWidthVar = __get_properties( $infeedWidthVars, $i );
@@ -680,11 +681,10 @@
 	}
 
     function calculate_outfeed_tail(  ){
-		global $DATA;
-
+		
         validate_isset(['width', 'length', 'outfeedVersion', 'drive']);
 
-		$outfeedTails = $DATA['outfeedTail'];
+		$outfeedTails = DATA['outfeedTail'];
 
 		for( $i=0; $i < sizeof( $outfeedTails['BOM'] ); $i++ ){
 			$outfeedTail = __get_properties( $outfeedTails, $i );
@@ -707,11 +707,10 @@
 	}
 
 	function calculate_outfeed_width_vars(  ){
-		global $DATA;
-
+		
 		validate_isset(['width', 'outfeedVersion']);
 
-		$outfeedWidthVars = $DATA['outfeedWidthVars'];
+		$outfeedWidthVars = DATA['outfeedWidthVars'];
 		
 		for( $i=0; $i < sizeof($outfeedWidthVars['BOM']); $i++ ){
 			$outfeedWidthVar = __get_properties( $outfeedWidthVars, $i );
@@ -741,12 +740,11 @@
 	}
 
 	function calculate_motors(  ){
-        global $DATA;
-
+        
         validate_isset(['drive', 'voltage', 'opsMode','speedMode', 'speed', 'load', 'width', 'length', 'angle']);
 
-		$motors = $DATA['motors'];
-		$n = $DATA['calculations']['motor'];
+		$motors = DATA['motors'];
+		$n = DATA['calculations']['motor'];
 
 
 		$speedmpm = $_POST['speed'] / MPM_TO_FPM;
@@ -818,11 +816,10 @@
 	}
 
 	function calculate_side_rails(  ){
-		global $DATA;
-
+		
 		validate_isset(['sideRail']);
 
-		$sideRails = $DATA['sideRails'][$_POST['sideRail']];
+		$sideRails = DATA['sideRails'][$_POST['sideRail']];
 		$i=0; $j=0;
 
 
@@ -911,11 +908,10 @@
 
 
 	function calculate_stands(  ){
-		global $DATA;
-
+		
         validate_isset(['standType', 'standHeight', 'standQuantity', 'width']);
 
-		$stands = $DATA['stands'][$_POST['standType']];
+		$stands = DATA['stands'][$_POST['standType']];
 		$j=0; $k=0;
 
 
@@ -946,15 +942,14 @@
 	}
 
 	function calculate_stands_caster(  ){
-		global $DATA;
-
+		
         validate_isset(['hasCasters', 'standQuantity']);
 
 		if($_POST['hasCasters'] && $_POST['standHasExtras'])
 			return [
-				'basePrice'	=> $DATA['standsCaster']['price'],
+				'basePrice'	=> DATA['standsCaster']['price'],
 				'quantity'	=> $_POST['standQuantity'],
-				'price'		=> $DATA['standsCaster']['price'] * $_POST['standQuantity']
+				'price'		=> DATA['standsCaster']['price'] * $_POST['standQuantity']
 			];
 
 		return [
@@ -965,15 +960,14 @@
 	}	
 
 	function calculate_stand_leveling(  ){
-		global $DATA;
+		
+        validate_isset(['hasBrackets', 'standQuantity']);
 
-        validate_isset(['hasLeveling', 'standQuantity']);
-
-		if($_POST['hasLeveling'] && $_POST['standHasExtras'])
+		if($_POST['hasBrackets'] && $_POST['standHasExtras'])
 			return [
-				'basePrice'	=> $DATA['standsLeveling']['price'],
+				'basePrice'	=> DATA['standsLeveling']['price'],
 				'quantity'	=> $_POST['standQuantity'],
-				'price'		=> $DATA['standsLeveling']['price'] * $_POST['standQuantity']
+				'price'		=> DATA['standsLeveling']['price'] * $_POST['standQuantity']
 			];
 
 		return [
@@ -993,14 +987,13 @@
 
 
 	function calculate_stringers(  ){
-		global $DATA;
-
+		
         validate_isset(['standType', 'length', 'standQuantity']);
 
 		$hasStringers = calculate_has_stringers( $_POST['stand'], $_POST['standQuantity'] );
 
 		if( $hasStringers ){
-			$stringers = $DATA['stringers'];
+			$stringers = DATA['stringers'];
 			$i=0;
 
 			for( $i=0; $i < sizeof($stringers['conveyorLength']) - 1 && $_POST['length'] > $stringers['conveyorLength'][$i]; $i++ );
@@ -1025,12 +1018,11 @@
 	}
 
 	function calculate_control(  ){
-		global $DATA;
-
+		
         validate_isset(['control1', 'control2', 'control3']);
 
-		$controls = $DATA['controls'];
-		$n = $DATA['calculations']['pricing'];
+		$controls = DATA['controls'];
+		$n = DATA['calculations']['pricing'];
 
 		$total = 0;
 
@@ -1061,9 +1053,8 @@
 	}
 
 	function calculate_pricing( $basePrice ){
-		global $DATA;
-
-		$n = $DATA['calculations']['pricing'];
+		
+		$n = DATA['calculations']['pricing'];
 
 
 		$priceInc1 = ceil( $basePrice + ( $basePrice * $n['priceIncrease1'] ) );

@@ -13,14 +13,14 @@
 
     "belt": "460445",
 
-    "sideRails": "fixed",
+    "sideRail": "fixed",
     "railSystem": "sf13",
-    "railsHeight": 25,
+    "railHeight": 25,
 
-    "stands": "leveling",
-    "standsHeight": 1219,
-    "standsHeightUnit": "mm",
-    "standsQuantity": 2,
+    "standType": "leveling",
+    "standHeight": 1219,
+    "standHeightUnit": "mm",
+    "standQuantity": 2,
 
     "hasBrackets": true,
 

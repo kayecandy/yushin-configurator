@@ -269,11 +269,13 @@ body.cndce-waiting #content{
 	display: none;
 }
 
+/* 
+
 body.past-header #sidebar-spacer{
 	display: block;
-}
+} */
 
-body.past-header #sidebar{
+/* body.past-header #sidebar{
 	position: fixed;
 	top: 0;
 	max-height: 100%;
@@ -282,15 +284,15 @@ body.past-header #sidebar{
     direction: rtl;
 	width: 230px;
     transform: translateX(-15px);
-}
+} */
 
-body.past-header #sidebar > div{
+/* body.past-header #sidebar > div{
 	direction: ltr;
-}
+} */
 
-body:not(.past-header) #sidebar{
+/* body:not(.past-header) #sidebar{
 	left: 0!important;
-}
+} */
 
 
 /*#about-container .title{

@@ -16,6 +16,8 @@ $( document ).ready( function(  ){
 
 
 	var $aboutContainer = $( '#about-container' );
+	var $stepsContainer = $( '#steps-container' );
+	var $sidebarContainer = $( '#sidebar' );
 
 	// Input
 	var $acceptTerms = $( '#accept-terms-checkbox' );
@@ -83,6 +85,10 @@ $( document ).ready( function(  ){
 
 	// Set active step
 	gotoStep( 0 );
+
+	$stepsContainer.css({
+		'min-height': $sidebarContainer.height() + 'px'
+	});
 
 
 	// jQuery Dialogues
@@ -2892,10 +2898,6 @@ $( document ).ready( function(  ){
 				width: $aboutContainer.outerWidth(  )
 			} )
 			$( 'body' ).addClass( 'past-header' );
-			$( '#sidebar' ).css( {
-				left: $( '#sidebar-spacer' ).offset(  ).left + 'px'
-			} )
-
 		}else{
 			$aboutContainer.css( {
 				top: '',
